@@ -10,6 +10,7 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router'
 import Login from './pages/Login.jsx'
 import UnauthorizedPage from './pages/UnauthorizedPage.jsx'
 import HomePage from './pages/HomePage.jsx'
+import Register from './pages/Register.jsx'
 
 const AppContainer = () => {
 
@@ -48,6 +49,14 @@ const router = createBrowserRouter([
     element: (
       <Provider store={store}>
         <Login />
+      </Provider>
+    )
+  },
+  {
+    path: "/register",
+    element: (
+      <Provider store={store}>
+        <Register />
       </Provider>
     )
   },

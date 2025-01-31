@@ -4,8 +4,6 @@ import { webPage } from "../classes/webPage";
 import ManageUser from "../pages/ManageUser";
 import ManageVehicle from "../pages/ManageVehicle";
 import ManageVehicleBrand from "../pages/ManageVehicleBrand";
-import { FaHome } from "react-icons/fa";
-import HomePage from "../pages/HomePage";
 import ManageVehicleModel from "../pages/ManageVehicleModel";
 import ManageVehicleTrimLevel from "../pages/ManageVehicleTrimLevel";
 import ManageVehicleType from "../pages/ManageVehicleType";

@@ -6,7 +6,6 @@ import ManageGrid from '../components/AgGrid/ManageGrid'
 import { FaUsers } from 'react-icons/fa6'
 import { deleteEntity, get, getAll } from '../api/EntityOperatioon'
 import UserForm from './forms/UserForm'
-import { successNotification } from '../components/Notification'
 import { successMessage } from '../components/ApiMessage'
 
 const ManageUser = () => {
@@ -19,7 +18,6 @@ const ManageUser = () => {
     useEffect(() => {
         getAllUser().then(data => {
             setRowData(data);
-            successMessage("User fetch");
         })
     }, [])
 

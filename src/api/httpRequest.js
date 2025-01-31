@@ -1,15 +1,18 @@
+import { JWT_TOKEN_PREFIX } from "../utils/Constants";
+import { getTokenFromLocalStorage } from "../utils/global";
+
 async function apiRequest(method, url, data = null, params = {}) {
     try {
         Object.keys(params).forEach(key => {
             url = url.replace(`:${key}`, params[key]);
         });
 
-        // const token = getJwtFromLocalStorage(JWT_TOKEN_PREFIX);
+        const token = getTokenFromLocalStorage(JWT_TOKEN_PREFIX);
 
         const options = {
             method: method,
             headers: {
-                // 'Authorization': `Bearer ${token}`,
+                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
             }
         }

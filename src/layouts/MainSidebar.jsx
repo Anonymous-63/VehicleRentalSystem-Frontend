@@ -3,14 +3,15 @@ import Sider from 'antd/es/layout/Sider'
 import React from 'react'
 import { webPages } from '../routes/WebPages';
 import { useNavigate } from 'react-router';
+import { JWT_TOKEN_PREFIX } from '../utils/Constants';
 
 const MainSidebar = (props) => {
-
+  const token = localStorage.getItem(JWT_TOKEN_PREFIX);
   const navigate = useNavigate();
   const filterSidebar = webPages.map(webPage => {
     if (webPage.children.length > 0) {
       let childPages = webPage.children.filter(childPage => {
-        if (true) {
+        if (!token) {
           return childPage;
         }
       });
@@ -22,10 +23,8 @@ const MainSidebar = (props) => {
         return;
       }
     } else {
-      if (true) {
+      if (!token) {
         return webPage;
-      } else {
-        return;
       }
     }
   }).filter(webPage => webPage != undefined);
@@ -36,7 +35,7 @@ const MainSidebar = (props) => {
     icon: page.sidebar.icon,
     children: page.children.length
       ? page.children.map((child) => ({
-        key: child.sidebar.key,
+        key: `${page.sidebar.route}/${child.sidebar.route}`,
         label: child.sidebar.label,
         icon: child.sidebar.icon,
       }))
@@ -44,13 +43,13 @@ const MainSidebar = (props) => {
   }));
 
   const handleMenuClick = ({ key }) => {
-    navigate(key);
+    navigate(`${key}`);
   }
 
 
   return (
-    <Sider width={"15%"} breakpoint='lg' collapsedWidth={0} trigger={null}>
-      <Menu items={menuItems} className='h-full bg-primary' theme='dark' onClick={handleMenuClick} >
+    <Sider theme='dark' width={"15%"} breakpoint='lg' collapsedWidth={0} trigger={null}>
+      <Menu items={menuItems} className='h-full' theme='dark' onClick={handleMenuClick} mode='inline' >
       </Menu>
     </Sider>
   )

@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
-import ManageGrid from '../components/AgGrid/ManageGrid'
-import PageHeader from '../layouts/PageHeader'
-import { Layout } from 'antd'
-import { FaCar, FaUsers } from 'react-icons/fa6'
-import { Content } from 'antd/es/layout/layout'
-import { successMessage } from '../components/ApiMessage'
-import { deleteEntity, get, getAll } from '../api/EntityOperatioon'
-import VehicleForm from './forms/VehicleForm'
+import { successMessage } from '../components/ApiMessage';
+import { Layout } from 'antd';
+import PageHeader from '../layouts/PageHeader';
+import { Content } from 'antd/es/layout/layout';
+import ManageGrid from '../components/AgGrid/ManageGrid';
+import { deleteEntity, get, getAll } from '../api/EntityOperatioon';
+import VehicleTypeForm from './forms/VehicleTypeForm';
+import { FaCar } from 'react-icons/fa6';
 
-const ManageVehicle = () => {
+const ManageVehicleType = () => {
     const gridRef = useRef();
     const [rowData, setRowData] = useState();
     const [columnDefs] = useState(colDefs);
@@ -16,7 +16,7 @@ const ManageVehicle = () => {
     const [fieldValue, setFieldValue] = useState();
 
     useEffect(() => {
-        getAllVehicle().then(data => {
+        getAllVehicleBrand().then(data => {
             setRowData(data);
             successMessage("User fetch");
         })
@@ -48,7 +48,7 @@ const ManageVehicle = () => {
             }
         }
         if (id === undefined) return;
-        getVehicle(id).then(data => {
+        getVehicleBrand(id).then(data => {
             if (data) {
                 setFieldValue(data);
                 setIsModalOpen(true);
@@ -62,7 +62,7 @@ const ManageVehicle = () => {
             const ids = selectedRows.map((row) => {
                 return row.id;
             });
-            deleteVehicle(ids).then((result) => {
+            deleteVehicleBrand(ids).then((result) => {
                 if (result.status) {
                     console.log(`Deleted successfully`);
                 } else {
@@ -78,28 +78,24 @@ const ManageVehicle = () => {
 
     return (
         <Layout className='h-full'>
-            <PageHeader title={"Manage Vehicle"} icon={<FaCar />} handleAdd={handleAdd} handleUpdate={handleUpdate} handleDelete={handleDelete} />
+            <PageHeader title={"Manage Vehicle Type"} icon={<FaCar />} handleAdd={handleAdd} handleUpdate={handleUpdate} handleDelete={handleDelete} />
             <Content className='flex m-3 shadow-2xl'>
                 <ManageGrid gridRef={gridRef} rowData={rowData} columnDefs={columnDefs} handleUpdate={handleUpdate} />
             </Content>
-            <VehicleForm isModalOpen={isModalOpen} closeModal={closeModal} fieldValue={fieldValue} />
+            <VehicleTypeForm isModalOpen={isModalOpen} closeModal={closeModal} fieldValue={fieldValue} />
         </Layout>
     )
 }
 
 const colDefs = [
     { headerName: "ID", field: "id", sortable: true, filter: true },
-    { headerName: "Color", field: "color", sortable: true, filter: true },
-    { headerName: "Fuel Type", field: "fuelType", sortable: true, filter: true },
-    { headerName: "License Plate", field: "licensePlate", sortable: true, filter: true },
-    { headerName: "Manufacture Year", field: "manufactureYear", sortable: true, filter: true },
-    { headerName: "Transmission", field: "transmission", sortable: true, filter: true },
-    { headerName: "Vehicle Reg Status", field: "vehicleRegStatus", sortable: true, filter: true },
+    { headerName: "Brand", field: "brand", sortable: true, filter: true },
+    { headerName: "Description", field: "description", sortable: true, filter: true },
 ];
 
-export async function getAllVehicle() {
+export async function getAllVehicleBrand() {
     try {
-        const response = await getAll("/vehicle");
+        const response = await getAll("/brand");
         if (response.status) {
             return response.data;
         }
@@ -109,9 +105,9 @@ export async function getAllVehicle() {
     }
 }
 
-export async function getVehicle(id) {
+export async function getVehicleBrand(id) {
     try {
-        const response = await get("/vehicle/:id", id);
+        const response = await get("/brand/:id", id);
         if (response.status) {
             return response.data
         }
@@ -121,9 +117,9 @@ export async function getVehicle(id) {
     }
 }
 
-export async function deleteVehicle(ids) {
+export async function deleteVehicleBrand(ids) {
     try {
-        const response = await deleteEntity("/vehicle", ids);
+        const response = await deleteEntity("/brand", ids);
         return response;
     } catch (error) {
         console.error(error);
@@ -131,4 +127,4 @@ export async function deleteVehicle(ids) {
     }
 }
 
-export default ManageVehicle
+export default ManageVehicleType

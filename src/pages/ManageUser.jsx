@@ -76,7 +76,6 @@ const ManageUser = () => {
             console.error("Please select atleast one row.");
         }
     }
-    const handleRestore = () => { }
 
     return (
         <Layout className='h-full'>

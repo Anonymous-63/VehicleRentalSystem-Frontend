@@ -8,3 +8,4 @@ export const DELETE = "DELETE";
 
 export const JWT_TOKEN_PREFIX = "token";
 export const JWT_REFRESH_TOKEN_PREFIX = "refreshToken";
+export const USER_PREFIX = "user";

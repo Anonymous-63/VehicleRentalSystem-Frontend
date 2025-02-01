@@ -1,5 +1,6 @@
+import { errorNotif } from "../components/CustomNotification";
 import { JWT_TOKEN_PREFIX } from "../utils/Constants";
-import { getTokenFromLocalStorage } from "../utils/global";
+import { getDataFromLocalStorage } from "../utils/storage";
 
 async function apiRequest(method, url, data = null, params = {}) {
     try {
@@ -7,7 +8,7 @@ async function apiRequest(method, url, data = null, params = {}) {
             url = url.replace(`:${key}`, params[key]);
         });
 
-        const token = getTokenFromLocalStorage(JWT_TOKEN_PREFIX);
+        const token = getDataFromLocalStorage(JWT_TOKEN_PREFIX);
 
         const options = {
             method: method,
@@ -24,13 +25,12 @@ async function apiRequest(method, url, data = null, params = {}) {
         const response = await fetch(url, options);
 
         if (!response.ok) {
-            throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+            errorNotif(`${response.status} - ${response.statusText}`);
         }
 
         return await response.json();
     } catch (error) {
-        console.error('HTTP Request Error:', error);
-        throw error;
+        errorNotif(error);
     }
 };
 

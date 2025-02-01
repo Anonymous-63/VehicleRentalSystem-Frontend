@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { JWT_REFRESH_TOKEN_PREFIX, JWT_TOKEN_PREFIX } from "../utils/Constants";
+import { JWT_REFRESH_TOKEN_PREFIX, JWT_TOKEN_PREFIX, USER_PREFIX } from "../utils/Constants";
+import { getDataFromLocalStorage } from "../utils/storage";
 
 
-const storeUser = localStorage.getItem("user");
-const initialState = storeUser ? JSON.parse(storeUser) : null;
+const storeUser = getDataFromLocalStorage(USER_PREFIX);
+const initialState = storeUser ? storeUser : null;
 const userSlice = createSlice({
     name: "user",
     initialState,
@@ -21,7 +22,7 @@ const userSlice = createSlice({
         },
         addUser: (state, action) => {
             if (action?.payload) {
-                localStorage.setItem("user", JSON.stringify(action.payload));
+                localStorage.setItem(USER_PREFIX, JSON.stringify(action.payload));
                 return action.payload;
             }
         },

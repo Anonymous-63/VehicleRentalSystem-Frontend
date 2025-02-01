@@ -2,7 +2,6 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './output.css'
 import App from './App.jsx'
-import { getTokenFromLocalStorage, routeList } from './utils/global.js'
 import { JWT_TOKEN_PREFIX } from './utils/Constants.js'
 import { Provider } from 'react-redux'
 import { store } from './store/store.js'
@@ -11,12 +10,14 @@ import Login from './pages/Login.jsx'
 import UnauthorizedPage from './pages/UnauthorizedPage.jsx'
 import HomePage from './pages/HomePage.jsx'
 import Register from './pages/Register.jsx'
+import { getDataFromLocalStorage } from './utils/storage.js'
+import {routeList} from "./utils/global.js"
 
 const AppContainer = () => {
 
-  const token = getTokenFromLocalStorage(JWT_TOKEN_PREFIX);
+  const token = getDataFromLocalStorage(JWT_TOKEN_PREFIX);
 
-  if (!token) {
+  if (token) {
     return (
       <Provider store={store}>
         <App />
@@ -66,7 +67,7 @@ const router = createBrowserRouter([
 ])
 
 createRoot(document.getElementById('root')).render(
-  // <StrictMode>
-  <RouterProvider router={router} />
-  // </StrictMode>,
+  <StrictMode>
+    <RouterProvider router={router} />
+  </StrictMode>,
 )

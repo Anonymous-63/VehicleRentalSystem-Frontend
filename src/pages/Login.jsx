@@ -9,7 +9,8 @@ import { useDispatch } from 'react-redux'
 import { addToken, addUser } from '../features/userSlice'
 import { errorNotif } from '../components/CustomNotification'
 import { JWT_TOKEN_PREFIX } from '../utils/Constants'
-import { getTokenFromLocalStorage } from '../utils/global'
+import { getDataFromLocalStorage } from '../utils/storage'
+import { Formik } from 'formik'
 
 const Login = () => {
   const navigate = useNavigate();
@@ -19,12 +20,12 @@ const Login = () => {
     login(values).then(result => {
       if (result.status) {
         dispatch(addToken(result));
-        let token = getTokenFromLocalStorage(JWT_TOKEN_PREFIX);
+        let token = getDataFromLocalStorage(JWT_TOKEN_PREFIX);
         if (token) {
           getWebOperator().then(result => {
             if (result.status) {
               dispatch(addUser(result.data))
-              navigate("/home")
+              navigate("/user")
             }
           }).catch(error => {
             errorNotif(error)
@@ -39,7 +40,6 @@ const Login = () => {
       console.error(error);
 
     })
-    console.log("Data", values);
   }
 
   return (
@@ -50,11 +50,13 @@ const Login = () => {
           <div className='flex flex-col flex-1 p-4 space-y-3 items-center justify-center'>
             <span className='text-4xl font-bold font-sans'>SIGN IN</span>
             <div className='w-full flex-col items-center'>
-              <Form layout='vertical' onFinish={onFinish} className='flex-col items-center'>
-                <InputField label={"Email Id"} name={"email"} rules={[{ required: true, message: "Required" }, { type: 'email', message: "Enter valid email id" }]} />
-                <PasswordField label={"Password"} name={"password"} rules={[{ required: true, message: "Required  " }]} />
-                <Button type='primary' htmlType='submit' className='w-full text-base font-bold'>Login</Button>
-              </Form>
+              <Formik>
+                <Form layout='vertical' onFinish={(e) => e.preventDefault()} className='flex-col items-center'>
+                  <InputField label={"Email Id"} name={"email"} rules={[{ required: true, message: "Required" }, { type: 'email', message: "Enter valid email id" }]} />
+                  <PasswordField label={"Password"} name={"password"} rules={[{ required: true, message: "Required  " }]} />
+                  <Button type='primary' htmlType='submit' className='w-full text-base font-bold'>Login</Button>
+                </Form>
+              </Formik>
             </div>
             <div className='flex justify-center'>
               <span >Don't have an account? <a onClick={() => navigate("/register")} className='text-blue-500 font-semibold cursor-pointer' >Sign Up</a></span>

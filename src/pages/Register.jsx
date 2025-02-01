@@ -14,6 +14,9 @@ const Register = () => {
         register(values).then(result => {
             if (result.status) {
                 successNotif(result.message);
+                navigate("/login");
+            } else {
+                errorNotif(result.message);
             }
         }).catch(error => {
             errorNotif(error);

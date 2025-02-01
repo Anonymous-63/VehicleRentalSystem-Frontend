@@ -1,5 +1,24 @@
-import { DELETE, GET, PUT, SERVER_URL } from "../utils/Constants";
+import { DELETE, GET, POST, PUT, SERVER_URL } from "../utils/Constants";
 import apiRequest from "./httpRequest";
+
+
+export const addEntity = async (url, values) => {
+    try {
+        const response = await apiRequest(POST, SERVER_URL + url, values);
+        return response;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export const updateEntity = async (url, values) => {
+    try {
+        const response = await apiRequest(PUT, SERVER_URL + url, values);
+        return response;
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 export async function get(url, id) {
     try {

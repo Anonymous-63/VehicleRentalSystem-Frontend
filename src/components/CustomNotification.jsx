@@ -1,33 +1,33 @@
 import { notification } from "antd"
 
-export const successNotif = (message = "Success", description = null, duration = 3) => {
+export const successNotif = (description = null) => {
     notification.success({
-        message,
+        message: "Success",
         description,
-        duration,
+        duration: 3,
     })
 }
 
-export const errorNotif = (message = "Error", description = null, duration = 3) => {
+export const errorNotif = (description = null) => {
     notification.error({
-        message,
+        message: "Error",
         description,
-        duration,
+        duration: 3,
     })
 }
 
-export const warningNotif = (message = "Warning", description = null, duration = 3) => {
+export const warningNotif = (description = null) => {
     notification.warning({
-        message,
+        message: "Warning",
         description,
-        duration,
+        duration: 3,
     })
 }
 
-export const infoNotif = (message = "Info", description = null, duration = 3) => {
+export const infoNotif = (description = null) => {
     notification.info({
-        message,
+        message: "Info",
         description,
-        duration,
+        duration: 3,
     })
 }

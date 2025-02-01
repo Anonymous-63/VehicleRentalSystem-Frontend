@@ -1,17 +1,19 @@
 import { Menu } from 'antd';
 import Sider from 'antd/es/layout/Sider'
 import React from 'react'
-import { webPages } from '../routes/WebPages';
 import { useNavigate } from 'react-router';
+import { getDataFromLocalStorage } from '../utils/storage';
+import { webPages } from '../routes/pagesConfig';
 import { JWT_TOKEN_PREFIX } from '../utils/Constants';
 
 const MainSidebar = (props) => {
-  const token = localStorage.getItem(JWT_TOKEN_PREFIX);
+  const token = getDataFromLocalStorage(JWT_TOKEN_PREFIX);
+
   const navigate = useNavigate();
   const filterSidebar = webPages.map(webPage => {
     if (webPage.children.length > 0) {
       let childPages = webPage.children.filter(childPage => {
-        if (!token) {
+        if (token) {
           return childPage;
         }
       });
@@ -23,7 +25,7 @@ const MainSidebar = (props) => {
         return;
       }
     } else {
-      if (!token) {
+      if (token) {
         return webPage;
       }
     }

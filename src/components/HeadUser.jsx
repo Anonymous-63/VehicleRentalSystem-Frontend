@@ -2,9 +2,11 @@ import { Avatar, Dropdown, Space } from 'antd'
 import React from 'react'
 import { FaChevronDown, FaDownload, FaHeartPulse, FaLock, FaRightFromBracket, FaUser, FaUserLarge } from 'react-icons/fa6';
 import { FiUser } from 'react-icons/fi';
+import { USER_PREFIX } from '../utils/Constants';
+import { getDataFromLocalStorage } from '../utils/storage';
 
 const HeadUser = () => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = getDataFromLocalStorage(USER_PREFIX);
     const userMenu = [
         {
             key: "logout",

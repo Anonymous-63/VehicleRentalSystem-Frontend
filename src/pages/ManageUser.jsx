@@ -7,6 +7,7 @@ import { FaUsers } from 'react-icons/fa6'
 import { deleteEntity, get, getAll } from '../api/EntityOperatioon'
 import UserForm from './forms/UserForm'
 import { successMessage } from '../components/ApiMessage'
+import { useSelector } from 'react-redux'
 
 const ManageUser = () => {
     const gridRef = useRef();
@@ -19,7 +20,7 @@ const ManageUser = () => {
         getAllUser().then(data => {
             setRowData(data);
         })
-    }, [])
+    }, [useSelector(store => !store.formStatus)])
 
     const closeModal = () => {
         setFieldValue();

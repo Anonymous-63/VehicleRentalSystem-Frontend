@@ -1,6 +1,23 @@
 import { DatePicker, Form, Input, InputNumber, Select } from "antd"
+import { useField } from "formik"
 
-export const InputField = (props) => {
+export const InputField = ({ label, icon, maxLength, showCount = false, required = false, disabled = false, errors, ...props }) => {
+    const [field, meta, helper] = useField(props);
+    return (
+        <Form.Item label={label} required={required}
+            validateStatus={meta.touched && meta.error ? 'error' : ''}
+            help={
+                meta.touched && meta.error ? errors[props.name] : null
+            }
+        >
+            <Input showCount={showCount} maxLength={maxLength} disabled={disabled} placeholder={`Enter ${label}...`}
+                onBlur={() => helper.setTouched(true)} {...props}{...field}
+            />
+        </Form.Item>
+    )
+}
+
+export const InputFieldOld = (props) => {
     const { label, name, rules = null } = props;
     return (
         <Form.Item label={label} name={name} rules={rules} >
@@ -8,6 +25,8 @@ export const InputField = (props) => {
         </Form.Item>
     )
 }
+
+
 
 export const PasswordField = (props) => {
     const { label, name, rules = null } = props;

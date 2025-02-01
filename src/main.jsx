@@ -15,7 +15,6 @@ import Register from './pages/Register.jsx'
 const AppContainer = () => {
 
   const token = getTokenFromLocalStorage(JWT_TOKEN_PREFIX);
-  localStorage.setItem("user", JSON.stringify({ id: 1, name: "Admin User", role: "admin" }));
 
   if (!token) {
     return (

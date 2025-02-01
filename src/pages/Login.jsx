@@ -4,10 +4,12 @@ import loginBg from "../assets/loginBg.jpg"
 import { InputField, PasswordField } from '../components/FormFields'
 import { Button, Form, message } from 'antd'
 import { useNavigate } from 'react-router'
-import { login } from '../api/AccountOperation'
+import { getWebOperator, login } from '../api/AccountOperation'
 import { useDispatch } from 'react-redux'
-import { addToken } from '../features/userSlice'
+import { addToken, addUser } from '../features/userSlice'
 import { errorNotif } from '../components/CustomNotification'
+import { JWT_TOKEN_PREFIX } from '../utils/Constants'
+import { getTokenFromLocalStorage } from '../utils/global'
 
 const Login = () => {
   const navigate = useNavigate();
@@ -17,7 +19,19 @@ const Login = () => {
     login(values).then(result => {
       if (result.status) {
         dispatch(addToken(result));
-        navigate("/home")
+        let token = getTokenFromLocalStorage(JWT_TOKEN_PREFIX);
+        if (token) {
+          getWebOperator().then(result => {
+            if (result.status) {
+              dispatch(addUser(result.data))
+              navigate("/home")
+            }
+          }).catch(error => {
+            errorNotif(error)
+          })
+        } else {
+          errorNotif("Something was wrong!");
+        }
       } else {
         errorNotif(error.message);
       }

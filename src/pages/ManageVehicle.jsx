@@ -1,16 +1,17 @@
+import { Layout } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
-import { Layout } from 'antd';
-import PageHeader from '../layouts/PageHeader';
-import { Content } from 'antd/es/layout/layout';
-import ManageGrid from '../components/AgGrid/ManageGrid';
-import VehicleModelForm from './forms/VehicleModelForm';
-import { FaCar } from 'react-icons/fa6';
-import { useEntityOperation } from '../hooks/useEntityOperation';
-import { useDispatch, useSelector } from 'react-redux';
-import { setFormStatus } from '../store/features/formStatusSlice';
-import { errorNotif, successNotif, warningNotif } from '../components/CustomNotification';
+import PageHeader from '../layouts/PageHeader'
+import { Content } from 'antd/es/layout/layout'
+import ManageGrid from '../components/AgGrid/ManageGrid'
+import { FaCar, FaUsers } from 'react-icons/fa6'
+import UserForm from './forms/UserForm'
+import { useDispatch, useSelector } from 'react-redux'
+import { errorNotif, successNotif, warningNotif } from '../components/CustomNotification'
+import { setFormStatus } from '../store/features/formStatusSlice'
+import { useEntityOperation } from '../hooks/useEntityOperation'
+import VehicleForm from './forms/VehicleForm'
 
-const ManageVehicleModel = () => {
+const ManageVehicle = () => {
     const gridRef = useRef();
     const dispatch = useDispatch();
     const [rowData, setRowData] = useState([]);
@@ -26,7 +27,7 @@ const ManageVehicleModel = () => {
     };
 
     useEffect(() => {
-        getAllModels(getAllEntity).then(result => {
+        getAllVehicles(getAllEntity).then(result => {
             if (result.status) {
                 setRowData(result.data);
             } else {
@@ -62,7 +63,7 @@ const ManageVehicleModel = () => {
             }
         }
         if (id === undefined) return;
-        getModel(getEntity, id).then(result => {
+        getVehicle(getEntity, id).then(result => {
             if (result.status) {
                 setFormValues(result.data);
                 setIsModalOpen(true);
@@ -82,7 +83,7 @@ const ManageVehicleModel = () => {
             const ids = selectedRows.map((row) => {
                 return row.id;
             });
-            deleteModel(deleteEntity, ids).then((result) => {
+            deleteVehicle(deleteEntity, ids).then((result) => {
                 if (result.status) {
                     successNotif('Deleted successfully');
                 } else {
@@ -100,45 +101,49 @@ const ManageVehicleModel = () => {
 
     return (
         <Layout className='h-full bg-accent'>
-            <PageHeader title={"Manage Vehicle Model"} icon={<FaCar />} handleAdd={handleAdd} handleUpdate={handleUpdate} handleDelete={handleDelete} />
+            <PageHeader title={"Manage Vehicle"} icon={<FaCar />} handleAdd={handleAdd} handleUpdate={handleUpdate} handleDelete={handleDelete} />
             <Content className='flex m-3 shadow-2xl rounded-2xl'>
                 <ManageGrid gridRef={gridRef} rowData={rowData} columnDefs={columnDefs} handleUpdate={handleUpdate} />
             </Content>
-            <VehicleModelForm isModalOpen={isModalOpen} closeModal={closeModal} formValues={formValues} />
+            <VehicleForm isModalOpen={isModalOpen} closeModal={closeModal} formValues={formValues} />
         </Layout>
     )
 }
 
 const colDefs = [
     { headerName: "ID", field: "id", sortable: true, filter: true },
-    { headerName: "Model", field: "model", sortable: true, filter: true },
     { headerName: "Brand", field: "brand.brand", sortable: true, filter: true },
-    { headerName: "Description", field: "description", sortable: true, filter: true },
+    { headerName: "Model", field: "model.model", sortable: true, filter: true },
+    { headerName: "Type", field: "type.type", sortable: true, filter: true },
+    { headerName: "Color", field: "color", sortable: true, filter: true },
+    { headerName: "License Plate", field: "licensePlate", sortable: true, filter: true },
+    { headerName: "Fuel Type", field: "fuelType", sortable: true, filter: true },
+    { headerName: "Transmission", field: "transmission", sortable: true, filter: true },
 ];
 
-export async function getAllModels(getAllEntity) {
+export async function getAllVehicles(getAllEntity) {
     try {
-        return await getAllEntity("/model");
+        return await getAllEntity("/vehicle");
     } catch (error) {
         throw error;
     }
 }
 
-export async function getModel(getEntity, id) {
+export async function getVehicle(getEntity, id) {
     try {
-        return await getEntity("/model/:id", id);
+        return await getEntity("/vehicle/:id", id);
     } catch (error) {
         throw error;
     }
 }
 
-export async function deleteModel(deleteEntity, ids) {
+export async function deleteVehicle(deleteEntity, ids) {
     try {
-        return await deleteEntity("/model", ids);
+        return await deleteEntity("/vehicle", ids);
     } catch (error) {
         throw error;
     }
 }
 
 
-export default ManageVehicleModel
+export default ManageVehicle

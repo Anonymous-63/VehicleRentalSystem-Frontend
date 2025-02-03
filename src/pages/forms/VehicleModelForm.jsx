@@ -1,5 +1,5 @@
-import { Button, Form, Modal } from 'antd';
-import React, { useEffect } from 'react'
+import { Form, Modal } from 'antd';
+import React, { useEffect, useState } from 'react'
 import FormHeader from '../../components/FormHeader';
 import { Formik } from 'formik';
 import { InputField, SelectField, TextAreaField } from '../../components/FormFields';
@@ -9,11 +9,15 @@ import { errorNotif, successNotif } from '../../components/CustomNotification';
 import { setFormStatus } from '../../store/features/formStatusSlice';
 import FormFooter from '../../components/FormFooter';
 import { useEntityOperation } from '../../hooks/useEntityOperation';
+import { getAllModels } from '../ManageVehicleModel';
 
 const VehicleModelForm = (props) => {
     const dispatch = useDispatch();
     const { addEntity } = useEntityOperation();
     const { isModalOpen, closeModal, formValues } = props;
+
+    const { getEntity, getAllEntity, deleteEntity } = useEntityOperation();
+    const [options, setOptions] = useState();
 
     const onSubmit = async (values, { setSubmitting }) => {
         addEntity("/model", values).then(result => {
@@ -35,6 +39,24 @@ const VehicleModelForm = (props) => {
         props.resetForm();
     }
 
+    useEffect(() => {
+        getAllModels(getAllEntity).then(result => {
+            if (result.status) {
+                if (result.data) {
+                    const options = result.data.map(brand => ({
+                        label: brand.brand,
+                        value: brand.id
+                    }))
+                    setOptions(options);
+                }
+            } else {
+                errorNotif(result.message);
+            }
+        }).catch(error => {
+            errorNotif(error.message);
+        })
+    }, [])
+
     return (
         <Formik initialValues={initialValues} validationSchema={validationSchema}
             onSubmit={onSubmit}
@@ -53,7 +75,7 @@ const VehicleModelForm = (props) => {
                         <FormHeader title={formValues ? "Update Model" : "Add Model"} closeModal={closeModal} />
                         <Form layout='vertical' autoComplete='off' className='pt-3' >
                             <InputField label={"Model Name"} name="model" required showCount errors={props.errors} />
-                            <SelectField name="brand" label={"Brand"} required errors={props.errors} />
+                            <SelectField name="brandId" label={"Brand"} options={options} required errors={props.errors} />
                             <TextAreaField label={"description"} name="description" showCount errors={props.errors} />
                         </Form>
                     </Modal>
@@ -64,12 +86,12 @@ const VehicleModelForm = (props) => {
 }
 
 const initialValues = {
-    brand: "",
+    brandId: "",
     model: "",
     description: "",
 }
 const validationSchema = Yup.object().shape({
-    brand: Yup.string().required("Required"),
+    brandId: Yup.string().required("Required"),
     model: Yup
         .string()
         .min(1, ({ min }) => `At least ${min} characters required.`)

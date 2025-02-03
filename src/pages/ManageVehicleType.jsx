@@ -3,14 +3,14 @@ import { Layout } from 'antd';
 import PageHeader from '../layouts/PageHeader';
 import { Content } from 'antd/es/layout/layout';
 import ManageGrid from '../components/AgGrid/ManageGrid';
-import VehicleModelForm from './forms/VehicleModelForm';
 import { FaCar } from 'react-icons/fa6';
 import { useEntityOperation } from '../hooks/useEntityOperation';
 import { useDispatch, useSelector } from 'react-redux';
 import { setFormStatus } from '../store/features/formStatusSlice';
 import { errorNotif, successNotif, warningNotif } from '../components/CustomNotification';
+import VehicleTypeForm from './forms/VehicleTypeForm';
 
-const ManageVehicleModel = () => {
+const ManageVehicleType = () => {
     const gridRef = useRef();
     const dispatch = useDispatch();
     const [rowData, setRowData] = useState([]);
@@ -26,7 +26,7 @@ const ManageVehicleModel = () => {
     };
 
     useEffect(() => {
-        getAllModels(getAllEntity).then(result => {
+        getAllTypes(getAllEntity).then(result => {
             if (result.status) {
                 setRowData(result.data);
             } else {
@@ -62,7 +62,7 @@ const ManageVehicleModel = () => {
             }
         }
         if (id === undefined) return;
-        getModel(getEntity, id).then(result => {
+        getType(getEntity, id).then(result => {
             if (result.status) {
                 setFormValues(result.data);
                 setIsModalOpen(true);
@@ -82,7 +82,7 @@ const ManageVehicleModel = () => {
             const ids = selectedRows.map((row) => {
                 return row.id;
             });
-            deleteModel(deleteEntity, ids).then((result) => {
+            deleteType(deleteEntity, ids).then((result) => {
                 if (result.status) {
                     successNotif('Deleted successfully');
                 } else {
@@ -100,45 +100,45 @@ const ManageVehicleModel = () => {
 
     return (
         <Layout className='h-full bg-accent'>
-            <PageHeader title={"Manage Vehicle Model"} icon={<FaCar />} handleAdd={handleAdd} handleUpdate={handleUpdate} handleDelete={handleDelete} />
+            <PageHeader title={"Manage Vehicle Type"} icon={<FaCar />} handleAdd={handleAdd} handleUpdate={handleUpdate} handleDelete={handleDelete} />
             <Content className='flex m-3 shadow-2xl rounded-2xl'>
                 <ManageGrid gridRef={gridRef} rowData={rowData} columnDefs={columnDefs} handleUpdate={handleUpdate} />
             </Content>
-            <VehicleModelForm isModalOpen={isModalOpen} closeModal={closeModal} formValues={formValues} />
+            <VehicleTypeForm isModalOpen={isModalOpen} closeModal={closeModal} formValues={formValues} />
         </Layout>
     )
 }
 
 const colDefs = [
     { headerName: "ID", field: "id", sortable: true, filter: true },
-    { headerName: "Model", field: "model", sortable: true, filter: true },
-    { headerName: "Brand", field: "brand.brand", sortable: true, filter: true },
+    { headerName: "Type", field: "type", sortable: true, filter: true },
+    { headerName: "Model", field: "model.model", sortable: true, filter: true },
     { headerName: "Description", field: "description", sortable: true, filter: true },
 ];
 
-export async function getAllModels(getAllEntity) {
+export async function getAllTypes(getAllEntity) {
     try {
-        return await getAllEntity("/model");
+        return await getAllEntity("/type");
     } catch (error) {
         throw error;
     }
 }
 
-export async function getModel(getEntity, id) {
+export async function getType(getEntity, id) {
     try {
-        return await getEntity("/model/:id", id);
+        return await getEntity("/type/:id", id);
     } catch (error) {
         throw error;
     }
 }
 
-export async function deleteModel(deleteEntity, ids) {
+export async function deleteType(deleteEntity, ids) {
     try {
-        return await deleteEntity("/model", ids);
+        return await deleteEntity("/type", ids);
     } catch (error) {
         throw error;
     }
 }
 
 
-export default ManageVehicleModel
+export default ManageVehicleType

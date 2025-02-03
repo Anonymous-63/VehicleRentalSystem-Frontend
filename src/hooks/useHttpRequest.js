@@ -4,6 +4,7 @@ import { useHandlerApiError } from "./useHandleApiError"
 
 export const useHttpRequest = () => {
     const handleApiError = useHandlerApiError();
+    
 
     const apiRequest = async (method, url, data = null, params = {}) => {
         try {

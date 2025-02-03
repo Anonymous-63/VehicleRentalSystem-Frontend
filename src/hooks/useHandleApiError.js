@@ -1,9 +1,6 @@
-import { useNavigate } from "react-router";
 import { errorNotif } from "../components/CustomNotification";
 
 export const useHandlerApiError = () => {
-    const navigate = useNavigate();
-
     return (response) => {
         if (!response) {
             errorNotif("No response from server.");

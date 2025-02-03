@@ -1,10 +1,9 @@
 import { Content } from 'antd/es/layout/layout'
 import React from 'react'
 import loginBg from "../assets/loginBg.jpg"
-import { InputField, PasswordField } from '../components/FormFields'
-import { Button, Form, message } from 'antd'
+import { InputField } from '../components/FormFields'
+import { Button, Form } from 'antd'
 import { useNavigate } from 'react-router'
-import { getWebOperator, login } from '../api/AccountOperation'
 import { useDispatch } from 'react-redux'
 import { addToken, addUser } from '../store/features/userSlice'
 import { errorNotif } from '../components/CustomNotification'
@@ -12,10 +11,12 @@ import { JWT_TOKEN_PREFIX } from '../utils/Constants'
 import { getDataFromLocalStorage } from '../utils/storage'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
+import { useAccountOperation } from '../hooks/useAccountOperation'
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { login, getWebOperator } = useAccountOperation();
 
   const onSubmit = async (values, { setSubmitting }) => {
     login(values).then(result => {

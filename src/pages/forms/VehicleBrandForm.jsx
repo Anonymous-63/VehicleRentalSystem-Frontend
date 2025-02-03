@@ -6,12 +6,13 @@ import { InputField, TextAreaField } from '../../components/FormFields';
 import * as Yup from "yup"
 import { useDispatch } from 'react-redux';
 import FormFooter from '../../components/FormFooter';
-import { addEntity } from '../../api/EntityOperatioon';
 import { setFormStatus } from '../../store/features/formStatusSlice';
 import { errorNotif, successNotif } from '../../components/CustomNotification';
+import { useEntityOperation } from '../../hooks/useEntityOperation';
 
 const VehicleBrandForm = (props) => {
     const dispatch = useDispatch();
+    const { addEntity } = useEntityOperation();
     const { isModalOpen, closeModal, formValues } = props;
 
     const onSubmit = async (values, { setSubmitting }) => {
@@ -74,7 +75,7 @@ const validationSchema = Yup.object().shape({
         .required("Required"),
     description: Yup
         .string()
-        .max(200, ({max}) => `Maximum ${max} characters allowed.`)
+        .max(200, ({ max }) => `Maximum ${max} characters allowed.`)
 
 })
 

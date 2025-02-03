@@ -2,15 +2,16 @@ import React from 'react'
 import loginBg from "../assets/loginBg.jpg"
 import { useNavigate } from 'react-router';
 import { Content } from 'antd/es/layout/layout';
-import { Button, Form, message } from 'antd';
-import { register } from '../api/AccountOperation';
+import { Button, Form } from 'antd';
 import { errorNotif, successNotif } from '../components/CustomNotification';
 import { Formik } from 'formik';
 import * as Yup from 'yup'
-import { InputField, PasswordField, TextAreaField } from '../components/FormFields';
+import { InputField, PasswordField } from '../components/FormFields';
+import { useAccountOperation } from '../hooks/useAccountOperation';
 
 const Register = () => {
     const navigate = useNavigate();
+    const { register } = useAccountOperation();
 
     const onSubmit = async (values, { setSubmitting }) => {
         register(values).then(result => {

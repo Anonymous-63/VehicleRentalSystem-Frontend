@@ -5,13 +5,14 @@ import { Formik } from 'formik';
 import { InputField, SelectField, TextAreaField } from '../../components/FormFields';
 import * as Yup from 'yup'
 import { useDispatch } from 'react-redux';
-import { addEntity } from '../../api/EntityOperatioon';
 import { errorNotif, successNotif } from '../../components/CustomNotification';
 import { setFormStatus } from '../../store/features/formStatusSlice';
 import FormFooter from '../../components/FormFooter';
+import { useEntityOperation } from '../../hooks/useEntityOperation';
 
 const VehicleModelForm = (props) => {
     const dispatch = useDispatch();
+    const { addEntity } = useEntityOperation();
     const { isModalOpen, closeModal, formValues } = props;
 
     const onSubmit = async (values, { setSubmitting }) => {

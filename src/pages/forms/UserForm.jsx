@@ -5,13 +5,14 @@ import { InputField, PasswordField } from '../../components/FormFields';
 import FormFooter from '../../components/FormFooter';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { addEntity } from '../../api/EntityOperatioon';
 import { errorNotif, successNotif } from '../../components/CustomNotification';
 import { useDispatch } from 'react-redux';
 import { setFormStatus } from '../../store/features/formStatusSlice';
+import { useEntityOperation } from '../../hooks/useEntityOperation';
 
 const UserForm = (props) => {
     const dispatch = useDispatch();
+    const { addEntity, updateEntity } = useEntityOperation();
     const { isModalOpen, closeModal, formValues } = props;
 
     const onSubmit = async (values, { setSubmitting }) => {

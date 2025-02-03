@@ -8,8 +8,9 @@ import VehicleBrandForm from './forms/VehicleBrandForm'
 import { useDispatch, useSelector } from 'react-redux'
 import { setFormStatus } from '../store/features/formStatusSlice'
 import { errorNotif, successNotif, warningNotif } from '../components/CustomNotification'
-import { deleteEntity, get, getAll } from '../api/EntityOperatioon'
-import { FormikContext } from 'formik'
+import { useEntityOperation } from '../hooks/useEntityOperation'
+
+
 
 const ManageVehicleBrand = () => {
   const gridRef = useRef();
@@ -19,13 +20,15 @@ const ManageVehicleBrand = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formValues, setFormValues] = useState();
 
+  const { getEntity, getAllEntity, deleteEntity } = useEntityOperation();
+
   const closeModal = () => {
     setFormValues();
     setIsModalOpen(false);
   };
 
   useEffect(() => {
-    getAllBrands().then(result => {
+    getAllBrands(getAllEntity).then(result => {
       if (result.status) {
         setRowData(result.data);
       } else {
@@ -33,7 +36,7 @@ const ManageVehicleBrand = () => {
       }
     }).catch(error => {
       errorNotif(error.message);
-    })  
+    })
   }, [useSelector(store => !store.formStatus)])
 
   const handleAdd = () => {
@@ -61,7 +64,7 @@ const ManageVehicleBrand = () => {
       }
     }
     if (id === undefined) return;
-    getBrand(id).then(result => {
+    getBrand(getEntity, id).then(result => {
       if (result.status) {
         setFormValues(result.data);
         setIsModalOpen(true);
@@ -81,7 +84,7 @@ const ManageVehicleBrand = () => {
       const ids = selectedRows.map((row) => {
         return row.id;
       });
-      deleteBrand(ids).then((result) => {
+      deleteBrand(deleteEntity, ids).then((result) => {
         if (result.status) {
           successNotif('Deleted successfully');
         } else {
@@ -114,28 +117,25 @@ const colDefs = [
   { headerName: "Description", field: "description", sortable: true, filter: true },
 ];
 
-export async function getAllBrands() {
+export async function getAllBrands(getAllEntity) {
   try {
-    const response = await getAll("/brand");
-    return response;
+    return await getAllEntity("/brand");
   } catch (error) {
     throw error;
   }
 }
 
-export async function getBrand(id) {
+export async function getBrand(getEntity, id) {
   try {
-    const response = await get("/brand/:id", id);
-    return response;
+    return await getEntity("/brand/:id", id);
   } catch (error) {
     throw error;
   }
 }
 
-export async function deleteBrand(ids) {
+export async function deleteBrand(deleteEntity, ids) {
   try {
-    const response = await deleteEntity("/brand", ids);
-    return response;
+    return await deleteEntity("/brand", ids);
   } catch (error) {
     throw error;
   }

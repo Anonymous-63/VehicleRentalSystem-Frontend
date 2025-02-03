@@ -4,11 +4,11 @@ import PageHeader from '../layouts/PageHeader'
 import { Content } from 'antd/es/layout/layout'
 import ManageGrid from '../components/AgGrid/ManageGrid'
 import { FaUsers } from 'react-icons/fa6'
-import { deleteEntity, get, getAll } from '../api/EntityOperatioon'
 import UserForm from './forms/UserForm'
 import { useDispatch, useSelector } from 'react-redux'
 import { errorNotif, successNotif, warningNotif } from '../components/CustomNotification'
 import { setFormStatus } from '../store/features/formStatusSlice'
+import { useEntityOperation } from '../hooks/useEntityOperation'
 
 const ManageUser = () => {
     const gridRef = useRef();
@@ -18,13 +18,15 @@ const ManageUser = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [formValues, setFormValues] = useState();
 
+    const { getEntity, getAllEntity, deleteEntity } = useEntityOperation();
+
     const closeModal = () => {
         setFormValues();
         setIsModalOpen(false);
     };
 
     useEffect(() => {
-        getAllUser().then(result => {
+        getAllUser(getAllEntity).then(result => {
             if (result.status) {
                 setRowData(result.data);
             } else {
@@ -60,7 +62,7 @@ const ManageUser = () => {
             }
         }
         if (id === undefined) return;
-        getUser(id).then(result => {
+        getUser(getEntity, id).then(result => {
             if (result.status) {
                 setFormValues(result.data);
                 setIsModalOpen(true);
@@ -80,7 +82,7 @@ const ManageUser = () => {
             const ids = selectedRows.map((row) => {
                 return row.id;
             });
-            deleteUser(ids).then((result) => {
+            deleteUser(deleteEntity, ids).then((result) => {
                 if (result.status) {
                     successNotif('Deleted successfully');
                 } else {
@@ -114,28 +116,25 @@ const colDefs = [
     { headerName: "About", field: "about", sortable: true, filter: true },
 ];
 
-export async function getAllUser() {
+export async function getAllUser(getAllEntity) {
     try {
-        const response = await getAll("/user");
-        return response;
+        return await getAllEntity("/user");
     } catch (error) {
         throw error;
     }
 }
 
-export async function getUser(id) {
+export async function getUser(getEntity, id) {
     try {
-        const response = await get("/user/:id", id);
-        return response;
+        return await getEntity("/user/:id", id);
     } catch (error) {
         throw error;
     }
 }
 
-export async function deleteUser(ids) {
+export async function deleteUser(deleteEntity, ids) {
     try {
-        const response = await deleteEntity("/user", ids);
-        return response;
+        return await deleteEntity("/user", ids);
     } catch (error) {
         throw error;
     }

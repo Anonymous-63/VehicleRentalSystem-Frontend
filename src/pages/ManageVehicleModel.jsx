@@ -4,30 +4,42 @@ import { Layout } from 'antd';
 import PageHeader from '../layouts/PageHeader';
 import { Content } from 'antd/es/layout/layout';
 import ManageGrid from '../components/AgGrid/ManageGrid';
-import VehicleBrandForm from './forms/VehicleBrandForm';
-import { deleteEntity, get, getAll } from '../api/EntityOperatioon';
 import VehicleModelForm from './forms/VehicleModelForm';
 import { FaCar } from 'react-icons/fa6';
+import { useEntityOperation } from '../hooks/useEntityOperation';
+import { useDispatch, useSelector } from 'react-redux';
 
 const ManageVehicleModel = () => {
     const gridRef = useRef();
-    const [rowData, setRowData] = useState();
+    const dispatch = useDispatch();
+    const [rowData, setRowData] = useState([]);
     const [columnDefs] = useState(colDefs);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [fieldValue, setFieldValue] = useState();
+    const [formValues, setFormValues] = useState();
 
-    useEffect(() => {
-        getAllVehicleBrand().then(data => {
-            setRowData(data);
-            successMessage("User fetch");
-        })
-    }, [])
+    const { getEntity, getAllEntity, deleteEntity } = useEntityOperation();
 
     const closeModal = () => {
-        setFieldValue();
-        setIsModalOpen(false)
+        setFormValues();
+        setIsModalOpen(false);
     };
-    const handleAdd = () => setIsModalOpen(true);
+
+    useEffect(() => {
+        getAllModels(getAllEntity).then(result => {
+            if (result.status) {
+                setRowData(result.data);
+            } else {
+                errorNotif(result.message);
+            }
+        }).catch(error => {
+            errorNotif(error.message);
+        })
+    }, [useSelector(store => !store.formStatus)])
+
+    const handleAdd = () => {
+        setFormValues();
+        setIsModalOpen(true);
+    };
 
     const handleUpdate = (data) => {
         let id = data?.id;
@@ -41,20 +53,26 @@ const ManageVehicleModel = () => {
                     if (selectedRows.length === 1) {
                         id = selectedRows[0].id;
                     } else {
-                        console.log("Please select only one row.");
+                        warningNotif("Please select only one row.");
                     }
                 } else {
-                    console.log("Please select any row to update.");
+                    errorNotif("Please select any row to update.");
                 }
             }
         }
         if (id === undefined) return;
-        getVehicleBrand(id).then(data => {
-            if (data) {
-                setFieldValue(data);
+        getModel(getEntity, id).then(result => {
+            if (result.status) {
+                setFormValues(result.data);
                 setIsModalOpen(true);
+            } else {
+                errorNotif(result.message);
             }
-        }).catch(error => console.log(error));
+        }).catch(error => {
+            errorNotif(error.message);
+        }).finally(() => {
+            dispatch(setFormStatus());
+        });
     }
 
     const handleDelete = () => {
@@ -63,69 +81,63 @@ const ManageVehicleModel = () => {
             const ids = selectedRows.map((row) => {
                 return row.id;
             });
-            deleteVehicleBrand(ids).then((result) => {
+            deleteModel(deleteEntity, ids).then((result) => {
                 if (result.status) {
-                    console.log(`Deleted successfully`);
+                    successNotif('Deleted successfully');
                 } else {
-                    console.error(`Failed to delete`);
+                    errorNotif("Failed to delete.");
                 }
-            }).catch((error) => {
-                console.error(`Failed to delete.`);
-            });
+            }).catch(error => {
+                errorNotif(error.message);
+            }).finally(() => {
+                dispatch(setFormStatus());
+            })
         } else {
-            console.error("Please select atleast one row.");
+            warningNotif("Please select atleast one row.");
         }
     }
 
     return (
-        <Layout className='h-full'>
-            <PageHeader title={"Manage Vehicle Model"} icon={<FaCar />} handleAdd={handleAdd} handleUpdate={handleUpdate} handleDelete={handleDelete} />
-            <Content className='flex m-3 shadow-2xl'>
+        <Layout className='h-full bg-accent'>
+            <PageHeader title={"Manage User"} icon={<FaCar />} handleAdd={handleAdd} handleUpdate={handleUpdate} handleDelete={handleDelete} />
+            <Content className='flex m-3 shadow-2xl rounded-2xl'>
                 <ManageGrid gridRef={gridRef} rowData={rowData} columnDefs={columnDefs} handleUpdate={handleUpdate} />
             </Content>
-            <VehicleModelForm isModalOpen={isModalOpen} closeModal={closeModal} fieldValue={fieldValue} />
+            <VehicleModelForm isModalOpen={isModalOpen} closeModal={closeModal} formValues={formValues} />
         </Layout>
     )
 }
 
 const colDefs = [
     { headerName: "ID", field: "id", sortable: true, filter: true },
+    { headerName: "Model", field: "model", sortable: true, filter: true },
     { headerName: "Brand", field: "brand", sortable: true, filter: true },
     { headerName: "Description", field: "description", sortable: true, filter: true },
 ];
 
-export async function getAllVehicleBrand() {
+export async function getAllModels(getAllEntity) {
     try {
-        const response = await getAll("/brand");
-        if (response.status) {
-            return response.data;
-        }
+        return await getAllEntity("/model");
     } catch (error) {
-        console.error(error);
-
+        throw error;
     }
 }
 
-export async function getVehicleBrand(id) {
+export async function getModel(getEntity, id) {
     try {
-        const response = await get("/brand/:id", id);
-        if (response.status) {
-            return response.data
-        }
+        return await getEntity("/model/:id", id);
     } catch (error) {
-        console.error(error);
-
+        throw error;
     }
 }
 
-export async function deleteVehicleBrand(ids) {
+export async function deleteModel(deleteEntity, ids) {
     try {
-        const response = await deleteEntity("/brand", ids);
-        return response;
+        return await deleteEntity("/model", ids);
     } catch (error) {
-        console.error(error);
-
+        throw error;
     }
 }
+
 
 export default ManageVehicleModel

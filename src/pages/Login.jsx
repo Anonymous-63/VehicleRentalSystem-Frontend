@@ -6,17 +6,18 @@ import { Button, Form, message } from 'antd'
 import { useNavigate } from 'react-router'
 import { getWebOperator, login } from '../api/AccountOperation'
 import { useDispatch } from 'react-redux'
-import { addToken, addUser } from '../features/userSlice'
+import { addToken, addUser } from '../store/features/userSlice'
 import { errorNotif } from '../components/CustomNotification'
 import { JWT_TOKEN_PREFIX } from '../utils/Constants'
 import { getDataFromLocalStorage } from '../utils/storage'
 import { Formik } from 'formik'
+import * as Yup from 'yup'
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const onFinish = (values) => {
+  const onSubmit = async (values, { setSubmitting }) => {
     login(values).then(result => {
       if (result.status) {
         dispatch(addToken(result));
@@ -28,18 +29,16 @@ const Login = () => {
               navigate("/user")
             }
           }).catch(error => {
-            errorNotif(error)
+            errorNotif(error.message)
           })
-        } else {
-          errorNotif("Something was wrong!");
         }
       } else {
         errorNotif(error.message);
       }
     }).catch(error => {
-      console.error(error);
+      errorNotif(error.message);
 
-    })
+    }).finally(setSubmitting(false));
   }
 
   return (
@@ -50,12 +49,16 @@ const Login = () => {
           <div className='flex flex-col flex-1 p-4 space-y-3 items-center justify-center'>
             <span className='text-4xl font-bold font-sans'>SIGN IN</span>
             <div className='w-full flex-col items-center'>
-              <Formik>
-                <Form layout='vertical' onFinish={(e) => e.preventDefault()} className='flex-col items-center'>
-                  <InputField label={"Email Id"} name={"email"} rules={[{ required: true, message: "Required" }, { type: 'email', message: "Enter valid email id" }]} />
-                  <PasswordField label={"Password"} name={"password"} rules={[{ required: true, message: "Required  " }]} />
-                  <Button type='primary' htmlType='submit' className='w-full text-base font-bold'>Login</Button>
-                </Form>
+              <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} >
+                {
+                  (props) => (
+                    <Form layout='vertical' className='flex-col items-center'>
+                      <InputField label={"Email Id"} name="email" required showCount errors={props.errors} />
+                      <InputField label={"Password"} name="password" required showCount errors={props.errors} />
+                      <Button type='primary' htmlType='submit' onClick={props.handleSubmit} className='w-full text-base font-bold'>Login</Button>
+                    </Form>
+                  )
+                }
               </Formik>
             </div>
             <div className='flex justify-center'>
@@ -67,5 +70,22 @@ const Login = () => {
     </Content>
   )
 }
+
+const initialValues = {
+  email: "",
+  password: ""
+}
+
+const validationSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email").required("Required"),
+  password: Yup
+    .string()
+    .min(8, ({ min }) => `Password must be at least ${min} characters`) // Minimum length
+    .max(20, ({ max }) => `Password must be no longer than ${max} characters`) // Maximum length
+    .matches(/[a-zA-Z]/, 'Password must contain at least one letter') // Requires at least one letter
+    .matches(/[0-9]/, 'Password must contain at least one number') // Requires at least one digit
+    .matches(/[\W_]/, 'Password must contain at least one special character') // Requires at least one special character
+    .required('Required'),
+});
 
 export default Login

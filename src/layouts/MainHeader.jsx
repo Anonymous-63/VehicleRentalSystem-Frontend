@@ -18,11 +18,11 @@ const MainHeader = () => {
   }, [dayjs().startOf('day').toISOString()]);
   
   return (
-    <Header className='bg-primary text-white'>
+    <Header className='bg-secondary text-white shadow-lg z-10'>
       <div className="flex justify-between items-center h-full">
         <h1 className='text-4xl font-bold'>VRS</h1>
         <div className='flex items-center gap-2'>
-          <span className="text-base font-semibold text-white opacity-75">{currentDate}</span>
+          <span className="text-base font-semibold opacity-75">{currentDate}</span>
           <HeadUser />
         </div>
       </div>

@@ -1,43 +1,81 @@
-import { Button, Form, Modal } from 'antd';
-import React, { useEffect } from 'react'
+import { Form, Modal } from 'antd';
+import React from 'react'
 import FormHeader from '../../components/FormHeader';
-import { InputField, PasswordField, TextAreaField } from '../../components/FormFields';
+import { Formik } from 'formik';
+import { InputField, TextAreaField } from '../../components/FormFields';
+import * as Yup from "yup"
+import { useDispatch } from 'react-redux';
+import FormFooter from '../../components/FormFooter';
+import { addEntity } from '../../api/EntityOperatioon';
+import { setFormStatus } from '../../store/features/formStatusSlice';
+import { errorNotif, successNotif } from '../../components/CustomNotification';
 
 const VehicleBrandForm = (props) => {
-    const [form] = Form.useForm();
-    const { isModalOpen, closeModal } = props;
-    const { onFinish, onFinishFailed } = props;
-    const { fieldValue } = props;
+    const dispatch = useDispatch();
+    const { isModalOpen, closeModal, formValues } = props;
 
-    useEffect(() => {
-        form.setFieldsValue(fieldValue);
-    }, [fieldValue, form]);
+    const onSubmit = async (values, { setSubmitting }) => {
+        addEntity("/brand", values).then(result => {
+            if (result.status) {
+                successNotif(result.message);
+                setSubmitting(false);
+                closeModal();
+            } else {
+                errorNotif(result.message);
+            }
+        }).catch(error => {
+            errorNotif(error.message);
+        }).finally(() => {
+            dispatch(setFormStatus());
+        })
+    }
+
+    const resetForm = (props) => {
+        props.resetForm();
+    }
+
     return (
-        <Modal open={isModalOpen} onCancel={closeModal} closable={false} maskClosable={false} footer={null}>
-            <FormHeader title={"Add Brand"} closeModal={closeModal} />
-            <div className='py-5'>
-                <Form form={form} layout='vertical' onFinish={onFinish} onFinishFailed={onFinishFailed} autoComplete='off' >
-                    <InputField label={"Name"} name={"name"}
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input your username!',
-                            },
-                        ]}
-                    />
-                    <InputField label={"Email Id"} name={"email"} />
-                    <TextAreaField label={"About"} name={"about"} />
-                    {!fieldValue && <PasswordField label={"Password"} name={"password"} />}
-
-                    <Form.Item label={null}>
-                        <Button type="primary" htmlType="submit">
-                            Submit
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </div>
-        </Modal>
+        <Formik initialValues={initialValues} validationSchema={validationSchema}
+            onSubmit={onSubmit}
+        >
+            {
+                (props) => (
+                    <Modal open={isModalOpen} onCancel={closeModal} closable={false} maskClosable={false} footer={<FormFooter handleReset={() => resetForm(props)} />}
+                        afterOpenChange={open => {
+                            if (open && formValues) {
+                                props.setValues(formValues)
+                            } else {
+                                resetForm(props);
+                            }
+                        }}
+                    >
+                        <FormHeader title={formValues ? "Update Brand" : "Add Brand"} closeModal={closeModal} />
+                        <Form layout='vertical' autoComplete='off' className='pt-3' >
+                            <InputField label={"Brand Name"} name="brand" required showCount errors={props.errors} />
+                            <TextAreaField label={"description"} name="description" showCount errors={props.errors} />
+                        </Form>
+                    </Modal>
+                )
+            }
+        </Formik >
     )
 }
+
+const initialValues = {
+    brand: "",
+    description: "",
+}
+const validationSchema = Yup.object().shape({
+    brand: Yup
+        .string()
+        .min(1, ({ min }) => `At least ${min} characters required.`)
+        .max(20, ({ }) => `Maximum ${max} characters allowed.`)
+        .matches(/^[a-zA-Z\s]+$/, "Only letters and spaces are allowed.")
+        .required("Required"),
+    description: Yup
+        .string()
+        .max(200, ({max}) => `Maximum ${max} characters allowed.`)
+
+})
 
 export default VehicleBrandForm

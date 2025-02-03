@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { JWT_REFRESH_TOKEN_PREFIX, JWT_TOKEN_PREFIX, USER_PREFIX } from "../utils/Constants";
-import { getDataFromLocalStorage } from "../utils/storage";
+import { JWT_REFRESH_TOKEN_PREFIX, JWT_TOKEN_PREFIX, USER_PREFIX } from "../../utils/Constants";
+import { getDataFromLocalStorage } from "../../utils/storage";
 
 
 const storeUser = getDataFromLocalStorage(USER_PREFIX);
@@ -33,5 +33,5 @@ const userSlice = createSlice({
     }
 })
 
-export const { addToken, addUser, removeUser } = userSlice.actions;
+export const { addToken, removeToken, addUser, removeUser } = userSlice.actions;
 export default userSlice.reducer;

@@ -1,4 +1,4 @@
-import { Layout, notification } from 'antd'
+import { Layout } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
 import PageHeader from '../layouts/PageHeader'
 import { Content } from 'antd/es/layout/layout'
@@ -6,27 +6,39 @@ import ManageGrid from '../components/AgGrid/ManageGrid'
 import { FaUsers } from 'react-icons/fa6'
 import { deleteEntity, get, getAll } from '../api/EntityOperatioon'
 import UserForm from './forms/UserForm'
-import { successMessage } from '../components/ApiMessage'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { errorNotif, successNotif, warningNotif } from '../components/CustomNotification'
+import { setFormStatus } from '../store/features/formStatusSlice'
 
 const ManageUser = () => {
     const gridRef = useRef();
-    const [rowData, setRowData] = useState();
+    const dispatch = useDispatch();
+    const [rowData, setRowData] = useState([]);
     const [columnDefs] = useState(colDefs);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [fieldValue, setFieldValue] = useState();
+    const [formValues, setFormValues] = useState();
+
+    const closeModal = () => {
+        setFormValues();
+        setIsModalOpen(false);
+    };
 
     useEffect(() => {
-        getAllUser().then(data => {
-            setRowData(data);
+        getAllUser().then(result => {
+            if (result.status) {
+                setRowData(result.data);
+            } else {
+                errorNotif(result.message);
+            }
+        }).catch(error => {
+            errorNotif(error.message);
         })
     }, [useSelector(store => !store.formStatus)])
 
-    const closeModal = () => {
-        setFieldValue();
-        setIsModalOpen(false)
+    const handleAdd = () => {
+        setFormValues();
+        setIsModalOpen(true);
     };
-    const handleAdd = () => setIsModalOpen(true);
 
     const handleUpdate = (data) => {
         let id = data?.id;
@@ -40,20 +52,26 @@ const ManageUser = () => {
                     if (selectedRows.length === 1) {
                         id = selectedRows[0].id;
                     } else {
-                        console.log("Please select only one row.");
+                        warningNotif("Please select only one row.");
                     }
                 } else {
-                    console.log("Please select any row to update.");
+                    errorNotif("Please select any row to update.");
                 }
             }
         }
         if (id === undefined) return;
-        getUser(id).then(data => {
-            if (data) {
-                setFieldValue(data);
+        getUser(id).then(result => {
+            if (result.status) {
+                setFormValues(result.data);
                 setIsModalOpen(true);
+            } else {
+                errorNotif(result.message);
             }
-        }).catch(error => console.log(error));
+        }).catch(error => {
+            errorNotif(error.message);
+        }).finally(() => {
+            dispatch(setFormStatus());
+        });
     }
 
     const handleDelete = () => {
@@ -64,25 +82,27 @@ const ManageUser = () => {
             });
             deleteUser(ids).then((result) => {
                 if (result.status) {
-                    console.log(`Deleted successfully`);
+                    successNotif('Deleted successfully');
                 } else {
-                    console.error(`Failed to delete`);
+                    errorNotif("Failed to delete.");
                 }
-            }).catch((error) => {
-                console.error(`Failed to delete.`);
-            });
+            }).catch(error => {
+                errorNotif(error.message);
+            }).finally(() => {
+                dispatch(setFormStatus());
+            })
         } else {
-            console.error("Please select atleast one row.");
+            warningNotif("Please select atleast one row.");
         }
     }
 
     return (
-        <Layout className='h-full'>
+        <Layout className='h-full bg-accent'>
             <PageHeader title={"Manage User"} icon={<FaUsers />} handleAdd={handleAdd} handleUpdate={handleUpdate} handleDelete={handleDelete} />
-            <Content className='flex m-3 shadow-2xl'>
+            <Content className='flex m-3 shadow-2xl rounded-2xl'>
                 <ManageGrid gridRef={gridRef} rowData={rowData} columnDefs={columnDefs} handleUpdate={handleUpdate} />
             </Content>
-            <UserForm isModalOpen={isModalOpen} closeModal={closeModal} fieldValue={fieldValue} />
+            <UserForm isModalOpen={isModalOpen} closeModal={closeModal} formValues={formValues} />
         </Layout>
     )
 }
@@ -97,24 +117,18 @@ const colDefs = [
 export async function getAllUser() {
     try {
         const response = await getAll("/user");
-        if (response.status) {
-            return response.data;
-        }
+        return response;
     } catch (error) {
-        console.error(error);
-
+        throw error;
     }
 }
 
 export async function getUser(id) {
     try {
         const response = await get("/user/:id", id);
-        if (response.status) {
-            return response.data
-        }
+        return response;
     } catch (error) {
-        console.error(error);
-
+        throw error;
     }
 }
 
@@ -123,8 +137,7 @@ export async function deleteUser(ids) {
         const response = await deleteEntity("/user", ids);
         return response;
     } catch (error) {
-        console.error(error);
-
+        throw error;
     }
 }
 

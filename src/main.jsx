@@ -11,7 +11,7 @@ import UnauthorizedPage from './pages/UnauthorizedPage.jsx'
 import HomePage from './pages/HomePage.jsx'
 import Register from './pages/Register.jsx'
 import { getDataFromLocalStorage } from './utils/storage.js'
-import {routeList} from "./utils/global.js"
+import { routeList } from "./utils/global.js"
 
 const AppContainer = () => {
 
@@ -67,7 +67,7 @@ const router = createBrowserRouter([
 ])
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>,
+  // <StrictMode>
+  <RouterProvider router={router} />
+  // </StrictMode>,
 )

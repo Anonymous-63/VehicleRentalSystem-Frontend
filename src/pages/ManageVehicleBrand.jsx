@@ -3,30 +3,43 @@ import React, { useEffect, useRef, useState } from 'react'
 import PageHeader from '../layouts/PageHeader'
 import { Content } from 'antd/es/layout/layout'
 import ManageGrid from '../components/AgGrid/ManageGrid'
-import { FaCar, FaUsers } from 'react-icons/fa6'
+import { FaUsers } from 'react-icons/fa6'
 import VehicleBrandForm from './forms/VehicleBrandForm'
+import { useDispatch, useSelector } from 'react-redux'
+import { setFormStatus } from '../store/features/formStatusSlice'
+import { errorNotif, successNotif, warningNotif } from '../components/CustomNotification'
 import { deleteEntity, get, getAll } from '../api/EntityOperatioon'
-import { successMessage } from '../components/ApiMessage'
+import { FormikContext } from 'formik'
 
 const ManageVehicleBrand = () => {
   const gridRef = useRef();
-  const [rowData, setRowData] = useState();
+  const dispatch = useDispatch();
+  const [rowData, setRowData] = useState([]);
   const [columnDefs] = useState(colDefs);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [fieldValue, setFieldValue] = useState();
-
-  useEffect(() => {
-    getAllVehicleBrand().then(data => {
-      setRowData(data);
-      successMessage("User fetch");
-    })
-  }, [])
+  const [formValues, setFormValues] = useState();
 
   const closeModal = () => {
-    setFieldValue();
-    setIsModalOpen(false)
+    setFormValues();
+    setIsModalOpen(false);
   };
-  const handleAdd = () => setIsModalOpen(true);
+
+  useEffect(() => {
+    getAllBrands().then(result => {
+      if (result.status) {
+        setRowData(result.data);
+      } else {
+        errorNotif(result.message);
+      }
+    }).catch(error => {
+      errorNotif(error.message);
+    })  
+  }, [useSelector(store => !store.formStatus)])
+
+  const handleAdd = () => {
+    setFormValues();
+    setIsModalOpen(true);
+  };
 
   const handleUpdate = (data) => {
     let id = data?.id;
@@ -40,20 +53,26 @@ const ManageVehicleBrand = () => {
           if (selectedRows.length === 1) {
             id = selectedRows[0].id;
           } else {
-            console.log("Please select only one row.");
+            warningNotif("Please select only one row.");
           }
         } else {
-          console.log("Please select any row to update.");
+          errorNotif("Please select any row to update.");
         }
       }
     }
     if (id === undefined) return;
-    getVehicleBrand(id).then(data => {
-      if (data) {
-        setFieldValue(data);
+    getBrand(id).then(result => {
+      if (result.status) {
+        setFormValues(result.data);
         setIsModalOpen(true);
+      } else {
+        errorNotif(result.message);
       }
-    }).catch(error => console.log(error));
+    }).catch(error => {
+      errorNotif(error.message);
+    }).finally(() => {
+      dispatch(setFormStatus());
+    });
   }
 
   const handleDelete = () => {
@@ -62,68 +81,63 @@ const ManageVehicleBrand = () => {
       const ids = selectedRows.map((row) => {
         return row.id;
       });
-      deleteVehicleBrand(ids).then((result) => {
+      deleteBrand(ids).then((result) => {
         if (result.status) {
-          console.log(`Deleted successfully`);
+          successNotif('Deleted successfully');
         } else {
-          console.error(`Failed to delete`);
+          errorNotif("Failed to delete.");
         }
-      }).catch((error) => {
-        console.error(`Failed to delete.`);
-      });
+      }).catch(error => {
+        errorNotif(error.message);
+      }).finally(() => {
+        dispatch(setFormStatus());
+      })
     } else {
-      console.error("Please select atleast one row.");
+      warningNotif("Please select atleast one row.");
     }
   }
 
   return (
-    <Layout className='h-full'>
-      <PageHeader title={"Manage Vehicle Brand"} icon={<FaCar />} handleAdd={handleAdd} handleUpdate={handleUpdate} handleDelete={handleDelete} />
-      <Content className='flex m-3 shadow-2xl'>
+    <Layout className='h-full bg-accent'>
+      <PageHeader title={"Manage Vehicle Brand"} icon={<FaUsers />} handleAdd={handleAdd} handleUpdate={handleUpdate} handleDelete={handleDelete} />
+      <Content className='flex m-3 shadow-2xl rounded-2xl'>
         <ManageGrid gridRef={gridRef} rowData={rowData} columnDefs={columnDefs} handleUpdate={handleUpdate} />
       </Content>
-      <VehicleBrandForm isModalOpen={isModalOpen} closeModal={closeModal} fieldValue={fieldValue} />
+      <VehicleBrandForm isModalOpen={isModalOpen} closeModal={closeModal} formValues={formValues} />
     </Layout>
   )
 }
 
 const colDefs = [
   { headerName: "ID", field: "id", sortable: true, filter: true },
-  { headerName: "Brand", field: "brand", sortable: true, filter: true },
+  { headerName: "Brand Name", field: "brand", sortable: true, filter: true },
   { headerName: "Description", field: "description", sortable: true, filter: true },
 ];
 
-export async function getAllVehicleBrand() {
+export async function getAllBrands() {
   try {
     const response = await getAll("/brand");
-    if (response.status) {
-      return response.data;
-    }
+    return response;
   } catch (error) {
-    console.error(error);
-
+    throw error;
   }
 }
 
-export async function getVehicleBrand(id) {
+export async function getBrand(id) {
   try {
     const response = await get("/brand/:id", id);
-    if (response.status) {
-      return response.data
-    }
+    return response;
   } catch (error) {
-    console.error(error);
-
+    throw error;
   }
 }
 
-export async function deleteVehicleBrand(ids) {
+export async function deleteBrand(ids) {
   try {
     const response = await deleteEntity("/brand", ids);
     return response;
   } catch (error) {
-    console.error(error);
-
+    throw error;
   }
 }
 

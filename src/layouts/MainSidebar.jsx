@@ -50,8 +50,8 @@ const MainSidebar = (props) => {
 
 
   return (
-    <Sider theme='dark' width={"15%"} breakpoint='lg' collapsedWidth={0} trigger={null}>
-      <Menu items={menuItems} className='h-full' theme='dark' onClick={handleMenuClick} mode='inline' >
+    <Sider width={"20%"} breakpoint='lg' collapsedWidth={0} trigger={null}>
+      <Menu items={menuItems} className='h-full font-bold bg-slate-800' theme='dark' onClick={handleMenuClick} mode='inline' >
       </Menu>
     </Sider>
   )

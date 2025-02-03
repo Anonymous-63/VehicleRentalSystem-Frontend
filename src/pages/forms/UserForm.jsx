@@ -1,32 +1,37 @@
-import { Button, Form, Modal } from 'antd'
+import { Form, Modal } from 'antd'
 import React from 'react'
 import FormHeader from '../../components/FormHeader';
-import { InputField } from '../../components/FormFields';
+import { InputField, PasswordField } from '../../components/FormFields';
 import FormFooter from '../../components/FormFooter';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import Password from 'antd/es/input/Password';
 import { addEntity } from '../../api/EntityOperatioon';
 import { errorNotif, successNotif } from '../../components/CustomNotification';
-import { successMessage } from '../../components/ApiMessage';
 import { useDispatch } from 'react-redux';
-import { setFormStatus } from '../../features/formStatus';
+import { setFormStatus } from '../../store/features/formStatusSlice';
 
 const UserForm = (props) => {
     const dispatch = useDispatch();
-    const { isModalOpen, closeModal } = props;
+    const { isModalOpen, closeModal, formValues } = props;
 
     const onSubmit = async (values, { setSubmitting }) => {
         addEntity("/user", values).then(result => {
             if (result.status) {
+                closeModal();
                 successNotif(result.message);
                 setSubmitting(false);
-                closeModal();
-                dispatch(setFormStatus());
             } else {
                 errorNotif(result.message);
             }
+        }).catch(error => {
+            errorNotif(error.message);
+        }).finally(() => {
+            dispatch(setFormStatus());
         })
+    }
+
+    const resetForm = (props) => {
+        props.resetForm();
     }
 
     return (
@@ -35,16 +40,22 @@ const UserForm = (props) => {
         >
             {
                 (props) => (
-                    <Modal open={isModalOpen} onCancel={closeModal} closable={false} maskClosable={false} footer={<FormFooter handleReset={() => resetForm(props)} />} >
-                        <FormHeader title={"Add User"} closeModal={closeModal} />
-                        <div className='py-5'>
-                            <Form layout='vertical' autoComplete='off' >
-                                <InputField label={"Name"} name="name" required showCount errors={props.errors} />
-                                <InputField label={"Email"} name="email" required showCount errors={props.errors} />
-                                <InputField label={"About"} name="about" showCount errors={props.errors} />
-                                <InputField label={"Password"} name="password" required showCount errors={props.errors} />
-                            </Form>
-                        </div>
+                    <Modal open={isModalOpen} onCancel={closeModal} closable={false} maskClosable={false} footer={<FormFooter handleReset={() => resetForm(props)} />}
+                        afterOpenChange={open => {
+                            if (open && formValues) {
+                                props.setValues(formValues)
+                            } else {
+                                resetForm(props);
+                            }
+                        }}
+                    >
+                        <FormHeader title={formValues ? "Update User" : "Add User"} closeModal={closeModal} />
+                        <Form layout='vertical' autoComplete='off' className='pt-3' >
+                            <InputField label={"Name"} name="name" required showCount errors={props.errors} />
+                            <InputField label={"Email"} name="email" required showCount errors={props.errors} />
+                            <InputField label={"Mobile No"} name="mobileNo" required showCount errors={props.errors} />
+                            <PasswordField label={"Password"} name="password" required showCount errors={props.errors} />
+                        </Form>
                     </Modal>
                 )
             }
@@ -55,32 +66,30 @@ const UserForm = (props) => {
 const initialValues = {
     name: "",
     email: "",
-    about: "",
+    mobileNo: "",
     Password: ""
 }
 const validationSchema = Yup.object().shape({
-    name: Yup.string().min(3, ({ min }) => `At least ${min} characters required.`).max(20, ({ }) => `Maximum ${max} characters allowed.`).required("Required"),
+    name: Yup
+        .string()
+        .min(3, ({ min }) => `At least ${min} characters required.`)
+        .max(20, ({ max }) => `Maximum ${max} characters allowed.`)
+        .matches(/^[a-zA-Z\s]+$/, "Only letters and spaces are allowed.")
+        .required("Required"),
     email: Yup.string().email("Invalid email").required("Required"),
+    mobileNo: Yup
+        .string()
+        .matches(/^[5-9]\d{9}$/, "Invalid mobile number")
+        .required("Required"),
     password: Yup
         .string()
-        .min(8, ({ min }) => `Password must be at least ${min} characters`) // Minimum length
-        .max(20, ({ max }) => `Password must be no longer than ${max} characters`) // Maximum length
-        .matches(/[a-zA-Z]/, 'Password must contain at least one letter') // Requires at least one letter
-        .matches(/[0-9]/, 'Password must contain at least one number') // Requires at least one digit
-        .matches(/[\W_]/, 'Password must contain at least one special character') // Requires at least one special character
+        .min(8, ({ min }) => `Password must be at least ${min} characters`)
+        .max(20, ({ max }) => `Password must be no longer than ${max} characters`)
+        .matches(/[a-zA-Z]/, 'Password must contain at least one letter')
+        .matches(/[0-9]/, 'Password must contain at least one number')
+        .matches(/[\W_]/, 'Password must contain at least one special character')
         .required('Required'),
 })
-
-
-const submitForm = async (values, operation) => {
-    addEntity("/user", values).then(result => {
-        if (result.status) {
-
-        }
-    }).catch(error => {
-        errorNotif(error);
-    });
-}
 
 
 export default UserForm

@@ -1,6 +1,8 @@
+import { useNavigate } from "react-router";
 import { errorNotif } from "../components/CustomNotification";
 import { JWT_TOKEN_PREFIX } from "../utils/Constants";
 import { getDataFromLocalStorage } from "../utils/storage";
+import { handleApiError } from "./handleApiErrors";
 
 async function apiRequest(method, url, data = null, params = {}) {
     try {
@@ -25,12 +27,13 @@ async function apiRequest(method, url, data = null, params = {}) {
         const response = await fetch(url, options);
 
         if (!response.ok) {
-            errorNotif(`${response.status} - ${response.statusText}`);
+            handleApiError(response);
+            throw new Error(`Request failed with status ${response.status}`);
         }
 
         return await response.json();
     } catch (error) {
-        errorNotif(error);
+        throw error;
     }
 };
 

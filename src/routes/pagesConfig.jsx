@@ -9,6 +9,7 @@ import { MdOutlinePayment } from "react-icons/md";
 import Payment from "../pages/Payment";
 import ManageVehicleType from "../pages/ManageVehicleType";
 import ManageVehicle from "../pages/ManageVehicle";
+import ShowVehicles from "../pages/ShowVehicles";
 
 export const webPages = [];
 
@@ -25,4 +26,6 @@ vehicle.children.push(manageVehicle, manageVehicleBrand, manageVehicleModel, man
 const booking = new webPage(8, new sidebar(8, "Booking", <FaCalendarCheck />, "booking", <Booking />), null, [], ["admin", "user"])
 const payment = new webPage(9, new sidebar(9, "Payment", <MdOutlinePayment />, "payment", <Payment />), null, [], ["admin"])
 
-webPages.push(manageUser, vehicle, booking, payment);
+const showVehicles = new webPage(10, new sidebar(10, "Vehicles", <FaCar />, "showVehicles", <ShowVehicles />), null, [], ["user"]);
+
+webPages.push(manageUser, vehicle, booking, payment, showVehicles);

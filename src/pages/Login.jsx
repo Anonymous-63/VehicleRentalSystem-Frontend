@@ -1,7 +1,7 @@
 import { Content } from 'antd/es/layout/layout'
 import React from 'react'
 import loginBg from "../assets/loginBg.jpg"
-import { InputField } from '../components/FormFields'
+import { InputField, PasswordField } from '../components/FormFields'
 import { Button, Form } from 'antd'
 import { useNavigate } from 'react-router'
 import { useDispatch } from 'react-redux'
@@ -55,7 +55,7 @@ const Login = () => {
                   (props) => (
                     <Form layout='vertical' className='flex-col items-center'>
                       <InputField label={"Email Id"} name="email" required showCount errors={props.errors} />
-                      <InputField label={"Password"} name="password" required showCount errors={props.errors} />
+                      <PasswordField label={"Password"} name="password" required showCount errors={props.errors} />
                       <Button type='primary' htmlType='submit' onClick={props.handleSubmit} className='w-full text-base font-bold'>Login</Button>
                     </Form>
                   )

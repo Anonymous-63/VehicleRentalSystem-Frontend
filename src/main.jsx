@@ -12,9 +12,9 @@ import HomePage from './pages/HomePage.jsx'
 import Register from './pages/Register.jsx'
 import { getDataFromLocalStorage } from './utils/storage.js'
 import { routeList } from "./utils/global.js"
+import CarDetailsPage from './pages/CarDetailsPage.jsx'
 
 const AppContainer = () => {
-
   const token = getDataFromLocalStorage(JWT_TOKEN_PREFIX);
 
   if (token) {
@@ -37,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Navigate to={routeList.length > 0 ? routeList[0].path : "/unauthorized"} />
+      },
+      {
+        path: "/carDetails",
+        element: <CarDetailsPage />
       }
     ]
   },

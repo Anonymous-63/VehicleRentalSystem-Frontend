@@ -12,6 +12,7 @@ import { useEntityOperation } from '../../hooks/useEntityOperation';
 import { getAllBrands } from '../ManageVehicleBrand';
 import { getAllModels } from '../ManageVehicleModel';
 import { getAllTypes } from '../ManageVehicleType';
+import { FaIndianRupeeSign, FaRupeeSign } from 'react-icons/fa6';
 
 const VehicleForm = (props) => {
     const dispatch = useDispatch();
@@ -107,11 +108,12 @@ const VehicleForm = (props) => {
                             <SelectField name="brandId" label={"Brand"} options={brandOptions} required errors={props.errors} />
                             <SelectField name="modelId" label={"Model"} options={modelOptions} required errors={props.errors} />
                             <SelectField name="typeId" label={"Type"} options={typeOptions} required errors={props.errors} />
+                            <InputField label={"Image URL"} name="vehicleImg" required errors={props.errors} />
                             <InputField label={"Color"} name="color" required showCount errors={props.errors} />
                             <InputField label={"License Plate"} name="licensePlate" required showCount errors={props.errors} />
                             <InputField label={"Fuel Type"} name="fuelType" required showCount errors={props.errors} />
                             <InputField label={"Transmission"} name="transmission" required showCount errors={props.errors} />
-
+                            <InputField label={"Price ( per day )"} name="pricePerDay" icon={<FaIndianRupeeSign />} required showCount errors={props.errors} />
                         </Form>
                     </Modal>
                 )
@@ -124,20 +126,23 @@ const initialValues = {
     brandId: "",
     modelId: "",
     typeId: "",
+    vehicleImg: "",
     color: "",
     licensePlate: "",
     fuelType: "",
-    transmission: ""
+    transmission: "",
+    pricePerDay: ""
 }
 const validationSchema = Yup.object().shape({
     brandId: Yup.string().required("Required"),
     modelId: Yup.string().required("Required"),
     typeId: Yup.string().required("Required"),
+    vehicleImg: Yup.string().required("Required"),
     color: Yup.string().required("Required"),
     licensePlate: Yup.string().required("Required"),
     fuelType: Yup.string().required("Required"),
     transmission: Yup.string().required("Required"),
-
+    pricePerDay: Yup.number().positive("Price must be a positive number").typeError("Price must be a number").required("Required")
 })
 
 export default VehicleForm

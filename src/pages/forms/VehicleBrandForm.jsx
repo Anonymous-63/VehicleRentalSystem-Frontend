@@ -53,6 +53,7 @@ const VehicleBrandForm = (props) => {
                         <FormHeader title={formValues ? "Update Brand" : "Add Brand"} closeModal={closeModal} />
                         <Form layout='vertical' autoComplete='off' className='pt-3' >
                             <InputField label={"Brand Name"} name="brand" required showCount errors={props.errors} />
+                            <InputField label={"Brand Logo URL"} name="logo" required showCount errors={props.errors} />
                             <TextAreaField label={"description"} name="description" showCount errors={props.errors} />
                         </Form>
                     </Modal>
@@ -64,6 +65,7 @@ const VehicleBrandForm = (props) => {
 
 const initialValues = {
     brand: "",
+    logo: "",
     description: "",
 }
 const validationSchema = Yup.object().shape({
@@ -73,6 +75,7 @@ const validationSchema = Yup.object().shape({
         .max(20, ({ }) => `Maximum ${max} characters allowed.`)
         .matches(/^[a-zA-Z\s]+$/, "Only letters and spaces are allowed.")
         .required("Required"),
+    logo: Yup.string().required("Required"),
     description: Yup
         .string()
         .max(200, ({ max }) => `Maximum ${max} characters allowed.`)

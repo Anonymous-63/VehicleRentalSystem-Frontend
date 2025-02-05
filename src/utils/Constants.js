@@ -1,5 +1,5 @@
 // export let SERVER_URL = "http://localhost:8080/api"
-export let SERVER_URL = "http://localhost:8080/api"
+export let SERVER_URL = "http://192.168.1.203:8080/api"
 
 export const GET = "GET";
 export const POST = "POST";

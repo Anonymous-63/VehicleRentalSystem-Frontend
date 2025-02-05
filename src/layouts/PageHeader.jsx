@@ -7,7 +7,7 @@ const PageHeader = (props) => {
   const { title, icon } = props;
   const { handleAdd, handleUpdate, handleDelete, handleRestore } = props;
   return (
-    <Header className='bg-surface text-primary border-b border-black'>
+    <Header className='bg-surface border-b border-black'>
       <div className='flex justify-between items-center h-full'>
         <span className="text-2xl font-bold flex items-center space-x-2">
           {icon}

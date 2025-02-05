@@ -42,11 +42,11 @@ const ShowVehicles = () => {
           </div>
         </div>
       </Header>
-      <Content className='h-full m-3 p-2 shadow-2xl rounded-2xl overflow-auto'>
+      <Content className='h-full m-3 p-2 bg-white shadow-2xl rounded-2xl overflow-auto'>
         <Row gutter={[16, 16]}>
           {
             vehicles.map(vehicle => (
-              <Col key={vehicle?.licensePlate} span={6} className='h-full'>
+              <Col key={vehicle?.licensePlate} span={8} className='h-full'>
                 <div className='h-full flex'>
                   <CarCard vehicle={vehicle} />
                 </div>

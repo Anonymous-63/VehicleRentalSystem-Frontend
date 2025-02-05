@@ -51,31 +51,29 @@ export const TextAreaField = ({ label, icon, maxLength, showCount = false, requi
     )
 }
 
-export const SelectField = ({ label, options, filter = false, required = false, disabled = false, errors, ...props }) => {
+export const SelectField = ({ label, options, showSearch = false, required = false, disabled = false, errors, ...props }) => {
     const [field, meta, helpers] = useField(props);
 
     return (
-        <>
-            <Form.Item label={label} required={required}
-                help={
-                    meta.touched && meta.error ? (
-                        <span className="text-red-500 font-normal">
-                            {errors[props.name]}
-                        </span>
-                    ) : null
-                }
-            >
-                <Select value={field?.value} defaultValue={options[0]?.value} showSearch={filter} optionFilterProp="children" options={options} disabled={disabled}
-                    filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
-                    onSelect={(value) => {
-                        helpers.setTouched(true);
-                        helpers.setValue(value);
-                    }}
-                    onBlur={() => helpers.setTouched(true)}
-                    {...props}
-                />
-            </Form.Item>
-        </>
+        <Form.Item label={label} required={required}
+            help={
+                meta.touched && meta.error ? (
+                    <span className="text-red-500 font-normal">
+                        {errors[props.name]}
+                    </span>
+                ) : null
+            }
+        >
+            <Select value={field?.value ?? undefined} defaultValue={options.length > 0 ? options[0].value : undefined} options={options} showSearch={showSearch} optionFilterProp="children" disabled={disabled}
+                filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
+                onSelect={(value) => {
+                    helpers.setTouched(true);
+                    helpers.setValue(value);
+                }}
+                onBlur={() => helpers.setTouched(true)}
+                {...props}
+            />
+        </Form.Item>
     );
 };
 

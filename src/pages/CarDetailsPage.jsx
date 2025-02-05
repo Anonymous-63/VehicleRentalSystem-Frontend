@@ -16,36 +16,36 @@ const CarDetailsPage = (props) => {
 
     const carInfo = [
         {
-            label: <span className='font-semibold'>Brand</span>,
+            label: <span className='font-semibold text-black'>Brand</span>,
             children: vehicle?.brand?.brand
         },
         {
-            label: <span className='font-semibold'>Model</span>,
+            label: <span className='font-semibold text-black'>Model</span>,
             children: vehicle?.model?.model
         },
         {
-            label: <span className='font-semibold'>Type</span>,
+            label: <span className='font-semibold text-black'>Type</span>,
             children: vehicle?.type?.type
         },
         {
-            label: <span className='font-semibold'>Color</span>,
+            label: <span className='font-semibold text-black'>Color</span>,
             children: vehicle?.color
         },
         {
-            label: <span className='font-semibold'>License Plate</span>,
+            label: <span className='font-semibold text-black'>License Plate</span>,
             children: vehicle?.licensePlate,
             span: 2
         },
         {
-            label: <span className='font-semibold'>Fuel Type</span>,
+            label: <span className='font-semibold text-black'>Fuel Type</span>,
             children: vehicle?.fuelType
         },
         {
-            label: <span className='font-semibold'>Transmission</span>,
+            label: <span className='font-semibold text-black'>Transmission</span>,
             children: vehicle?.transmission
         },
         {
-            label: <span className='font-semibold'>Manufacture Year</span>,
+            label: <span className='font-semibold text-black'>Manufacture Year</span>,
             children: vehicle?.manufactureYear
         }
     ]
@@ -58,7 +58,7 @@ const CarDetailsPage = (props) => {
                         <img alt='vehicle' src={vehicle?.vehicleImg} width={'100%'} />
                     </Col>
                     <Col span={12} className='p-3 border border-black bg-white rounded-r-2xl space-y-5'>
-                        <Descriptions title="CAR INFO" bordered items={carInfo} size='small' />
+                        <Descriptions title="CAR INFO" items={carInfo} size='small' />
                         <div className='space-y-2'>
                             <div className="flex items-center space-x-2 text-3xl font-semibold">
                                 <FaIndianRupeeSign />
@@ -84,6 +84,24 @@ const CarDetailsPage = (props) => {
                                 </Form>
                             </div>
                             <Divider orientation="left" style={{ borderColor: '#000' }} >Price Details</Divider>
+                            <div>
+                                <Row gutter={[12, 12]}>
+                                    <Col span={12}>
+                                        <span>Base fare</span>
+                                    </Col>
+                                    <Col span={12}>
+                                        <span>2000</span>
+                                    </Col>
+                                </Row>
+                                <Row gutter={[12, 12]}>
+                                    <Col span={12}>
+                                        <span>Base fare</span>
+                                    </Col>
+                                    <Col span={12}>
+                                        <span>2000</span>
+                                    </Col>
+                                </Row>
+                            </div>
                         </div>
                         <div className='flex justify-end'>
                             <Button color='primary' variant='solid' className='text-lg font-bold' onClick={() => setIsModalOpen(true)} >Book Now</Button>

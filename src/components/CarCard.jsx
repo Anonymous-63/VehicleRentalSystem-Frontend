@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router'
 const CarCard = ({ vehicle }) => {
     const navigate = useNavigate();
     return (
-        <Card
+        <Card hoverable
             cover={
                 <img alt='coverImg' src={vehicle?.vehicleImg} className='h-48 object-cover w-full' />
             }

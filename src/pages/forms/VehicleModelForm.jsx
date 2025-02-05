@@ -44,8 +44,8 @@ const VehicleModelForm = (props) => {
             if (result.status) {
                 if (result.data) {
                     const options = result.data.map(brand => ({
-                        label: brand.brand,
-                        value: brand.id
+                        label: brand?.brand,
+                        value: brand?.id
                     }))
                     setOptions(options);
                 }

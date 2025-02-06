@@ -10,6 +10,7 @@ import { setFormStatus } from '../../store/features/formStatusSlice';
 import FormFooter from '../../components/FormFooter';
 import { useEntityOperation } from '../../hooks/useEntityOperation';
 import { getAllModels } from '../ManageVehicleModel';
+import { getAllBrands } from '../ManageVehicleBrand';
 
 const VehicleModelForm = (props) => {
     const dispatch = useDispatch();
@@ -40,7 +41,7 @@ const VehicleModelForm = (props) => {
     }
 
     useEffect(() => {
-        getAllModels(getAllEntity).then(result => {
+        getAllBrands(getAllEntity).then(result => {
             if (result.status) {
                 if (result.data) {
                     const options = result.data.map(brand => ({

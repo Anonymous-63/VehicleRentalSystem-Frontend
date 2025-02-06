@@ -71,14 +71,42 @@ export const SelectField = ({ label, options, showSearch = false, required = fal
                     helpers.setValue(value);
                 }}
                 onBlur={() => helpers.setTouched(true)}
+                placeholder={`Select ${label}...`}
                 {...props}
             />
         </Form.Item>
     );
 };
 
+export const DateField = ({ label, picker, showTime, format, required = false, disabled = false, errors, ...props }) => {
+    const [field, meta, helpers] = useField(props);
+    const [selectedDatetime, setSelectedDatetime] = useState(field.value);
 
-export const DatetimeField = ({ label, showTime, format, required = false, disabled = false, errors, ...props }) => {
+    return (
+        <Form.Item label={label} required={required}
+            help={
+                meta.touched && meta.error ? (
+                    <span className="text-red-500 font-normal">
+                        {errors[props.name]}
+                    </span>
+                ) : null
+            }
+        >
+            <DatePicker value={selectedDatetime} showTime={showTime} picker={picker} disabled={disabled} format={format}
+                onCalendarChange={(value) => {
+                    setSelectedDatetime(value);
+                    helpers.setValue(value)
+                }}
+                onBlur={() => helpers.setTouched(true)}
+                placeholder={`Select ${label}...`}
+                {...props}
+                className="w-full"
+            />
+        </Form.Item>
+    );
+}
+
+export const DatetimeRangeField = ({ label, picker, showTime, format, required = false, disabled = false, errors, ...props }) => {
     const [field, meta, helpers] = useField(props);
     const [selectedDatetime, setSelectedDatetime] = useState(field.value);
     return (
@@ -91,12 +119,13 @@ export const DatetimeField = ({ label, showTime, format, required = false, disab
                 ) : null
             }
         >
-            <DatePicker.RangePicker value={selectedDatetime} showTime={showTime} disabled={disabled} format={format}
+            <DatePicker.RangePicker value={selectedDatetime} showTime={showTime} picker={picker} disabled={disabled} format={format}
                 onCalendarChange={(value) => {
                     setSelectedDatetime(value);
                     helpers.setValue(value)
                 }}
                 onBlur={() => helpers.setTouched(true)}
+                placeholder={`Select ${label}...`}
                 {...props}
                 className="w-full"
             />

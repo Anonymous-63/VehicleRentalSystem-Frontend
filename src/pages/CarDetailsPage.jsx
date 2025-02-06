@@ -1,130 +1,125 @@
-import { Button, Col, DatePicker, Descriptions, Divider, Form, Layout, Row, Tag } from 'antd'
-import { Content } from 'antd/es/layout/layout'
-import React, { useState } from 'react'
-import { useLocation } from 'react-router'
-import VehicleBookingForm from './forms/VehicleBookingForm'
-import { DatetimeField } from '../components/FormFields'
-import { FaIndianRupeeSign } from 'react-icons/fa6'
-import PaymentForm from './forms/PaymentForm'
+import { Button, Col, DatePicker, Descriptions, Divider, Layout, Row, Tag } from 'antd';
+import { Content } from 'antd/es/layout/layout';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router';
+import { FaIndianRupeeSign } from 'react-icons/fa6';
+import PaymentForm from './forms/PaymentForm';
+import dayjs from 'dayjs';
 
-const CarDetailsPage = (props) => {
-    const location = useLocation();
-    const { vehicle } = location.state || {};
+const CarDetailsPage = () => {
+    const { state } = useLocation();
+    const vehicle = state?.vehicle;
+    const pickupCharge = 500;
+
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [duration, setDuration] = useState(1);
+
     const closeModal = () => {
         setIsModalOpen(false);
     };
 
+    const disabledDate = (current) => current && current < dayjs().startOf('day');
+
+    const onBookingDateChange = (dates) => {
+        if (!dates?.[0] || !dates?.[1]) return;
+
+        const diff = dayjs(dates[1]).diff(dayjs(dates[0]), "day") + 1;
+        setDuration(diff);
+    };
+
+    const baseFare = (vehicle?.pricePerDay || 0) * duration;
+    const totalPrice = baseFare + pickupCharge;
+
     const carInfo = [
-        {
-            label: <span className='font-semibold text-black'>Brand</span>,
-            children: vehicle?.brand?.brand
-        },
-        {
-            label: <span className='font-semibold text-black'>Model</span>,
-            children: vehicle?.model?.model
-        },
-        {
-            label: <span className='font-semibold text-black'>Type</span>,
-            children: vehicle?.type?.type
-        },
-        {
-            label: <span className='font-semibold text-black'>Color</span>,
-            children: vehicle?.color
-        },
-        {
-            label: <span className='font-semibold text-black'>License Plate</span>,
-            children: vehicle?.licensePlate,
-            span: 2
-        },
-        {
-            label: <span className='font-semibold text-black'>Fuel Type</span>,
-            children: vehicle?.fuelType
-        },
-        {
-            label: <span className='font-semibold text-black'>Transmission</span>,
-            children: vehicle?.transmission
-        },
-        {
-            label: <span className='font-semibold text-black'>Manufacture Year</span>,
-            children: vehicle?.manufactureYear
-        }
-    ]
+        { label: "Brand", value: vehicle?.brand?.brand },
+        { label: "Model", value: vehicle?.model?.model },
+        { label: "Type", value: vehicle?.type?.type },
+        { label: "Color", value: vehicle?.color },
+        { label: "License Plate", value: vehicle?.licensePlate, span: 2 },
+        { label: "Fuel Type", value: vehicle?.fuelType },
+        { label: "Transmission", value: vehicle?.transmission },
+        { label: "Manufacture Year", value: vehicle?.manufactureYear },
+    ];
 
     return (
         <Layout className='h-full'>
             <Content className='h-full m-3 shadow-2xl rounded-2xl overflow-auto'>
                 <Row className='h-full'>
+                    {/* Car Image Section */}
                     <Col span={12} className='flex justify-center items-center bg-accent border border-black rounded-s-2xl'>
-                        <img alt='vehicle' src={vehicle?.vehicleImg} width={'100%'} />
+                        <img alt='vehicle' src={vehicle?.vehicleImg} className='w-full' />
                     </Col>
+
+                    {/* Car Details Section */}
                     <Col span={12} className='p-3 border border-black bg-white rounded-r-2xl space-y-5'>
-                        <Descriptions title="CAR INFO" items={carInfo} size='small' />
+
+                        {/* Car Information */}
+                        <Descriptions title="CAR INFO" size='small' column={3}>
+                            {carInfo.map(({ label, value, span }) => (
+                                <Descriptions.Item key={label} label={<span className='font-semibold text-black'>{label}</span>} span={span}>
+                                    {value}
+                                </Descriptions.Item>
+                            ))}
+                        </Descriptions>
+
+                        {/* Pricing & Booking Section */}
                         <div className='space-y-2'>
                             <div className="flex items-center space-x-2 text-3xl font-semibold">
                                 <FaIndianRupeeSign />
-                                <h1>2000</h1>
+                                <h1>{vehicle?.pricePerDay}</h1>
                                 <span className="text-sm text-gray-500">per day</span>
                             </div>
-                            <Tag color="green" className='font-bold'>Free cancellation</Tag>
-                            <Divider orientation='left' style={{ borderColor: '#000' }} >Booking Dates</Divider>
-                            <div>
-                                <Form layout='vertical'>
-                                    <Row gutter={12}>
-                                        <Col span={12}>
-                                            <Form.Item label="From Date" name="fromDate">
-                                                <DatePicker className='w-full' />
-                                            </Form.Item>
-                                        </Col>
-                                        <Col span={12}>
-                                            <Form.Item label="To Date" name="toDate">
-                                                <DatePicker className='w-full' />
-                                            </Form.Item>
-                                        </Col>
-                                    </Row>
-                                </Form>
+                            <Tag color="green-inverse" className='font-bold text-base'>Free cancellation</Tag>
+
+                            <Divider orientation='left'>Booking Dates</Divider>
+                            <div className='p-4 bg-gray-200 rounded-lg shadow-md'>
+                                <DatePicker.RangePicker
+                                    disabledDate={disabledDate}
+                                    size='large'
+                                    defaultValue={[dayjs(), dayjs()]}
+                                    onCalendarChange={onBookingDateChange}
+                                    className='w-full'
+                                />
                             </div>
-                            <Divider orientation="left" style={{ borderColor: '#000' }} >Price Details</Divider>
-                            <div>
-                                <Row gutter={[12, 12]}>
-                                    <Col span={12}>
-                                        <span>Base fare</span>
-                                    </Col>
-                                    <Col span={12}>
-                                        <span className='flex justify-end'>2000</span>
-                                    </Col>
-                                </Row>
-                                <Row gutter={[12, 12]}>
-                                    <Col span={12}>
-                                        <span>Include all tax & GST</span>
-                                    </Col>
-                                    <Col span={12}>
-                                        <span></span>
-                                    </Col>
-                                </Row>
-                                <Row gutter={[12, 12]}>
-                                    <Col span={12}>
-                                        <span className='text-2xl font-bold'>Total Price</span>
-                                    </Col>
-                                    <Col span={12}>
-                                        <span className='text-2xl font-semibold flex justify-end'>2000</span>
-                                    </Col>
-                                </Row>
+
+                            {/* Fare Details */}
+                            <Divider orientation="center">FARE DETAILS</Divider>
+                            <div className='p-4 bg-white rounded-lg shadow-md'>
+                                <FareDetail label={`Base fare (${vehicle?.pricePerDay} X ${duration})`} amount={baseFare} />
+                                <FareDetail label="Doorstep delivery & pickup" amount={pickupCharge} />
+                                <FareDetail label="Insurance & GST" amount="Included" />
                             </div>
+
+                            <Divider className='border-black' />
+                            <FareDetail label="Total" amount={totalPrice} isTotal />
+
+                            <Divider className='border-black' />
                         </div>
+
+                        {/* Booking Button */}
                         <div className='flex justify-end'>
-                            <Button color='primary' variant='solid' className='text-lg font-bold' onClick={() => setIsModalOpen(true)} >Book Now</Button>
+                            <Button type='primary' size='large' className='font-bold' onClick={() => setIsModalOpen(true)}>
+                                Book Now
+                            </Button>
                         </div>
                     </Col>
                 </Row>
             </Content>
-            <PaymentForm
-                visible={isModalOpen}
-                onCancel={() => setModalVisible(false)}
-                onSuccess={() => setModalVisible(false)}
-            />
-        </Layout>
-    )
-}
 
-export default CarDetailsPage
+            {/* Payment Modal */}
+            <PaymentForm isModalOpen={isModalOpen} closeModal={closeModal} vehicle={vehicle}  />
+        </Layout>
+    );
+};
+
+// Reusable Component for Fare Details
+export const FareDetail = ({ label, amount, isTotal }) => (
+    <Row gutter={[12, 12]} className={`py-1 ${isTotal ? "text-2xl font-medium" : "text-gray-700"}`}>
+        <Col span={12}>{label}</Col>
+        <Col span={12} className="flex items-center justify-end font-semibold">
+            {typeof amount === "number" ? <><FaIndianRupeeSign />&nbsp;{amount}</> : amount}
+        </Col>
+    </Row>
+);
+
+export default CarDetailsPage;

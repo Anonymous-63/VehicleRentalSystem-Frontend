@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import CarCard from '../components/CarCard'
 import { useEntityOperation } from '../hooks/useEntityOperation'
 import { errorNotif } from '../components/CustomNotification'
+import VehicleBookingForm from './forms/VehicleBookingForm'
 
 const ShowVehicles = () => {
   const { getAllEntity } = useEntityOperation();

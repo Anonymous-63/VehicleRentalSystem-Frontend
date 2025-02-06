@@ -1,80 +1,86 @@
-import { Button, Form, Input, Modal, Select, Tabs } from 'antd'
+import { Button, DatePicker, Form, Input, Modal, Select, Tabs } from 'antd'
 import TabPane from 'antd/es/tabs/TabPane';
+import { Formik } from 'formik';
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux';
+import * as Yup from "yup"
+import { useEntityOperation } from '../../hooks/useEntityOperation';
+import { DateField, InputField } from '../../components/FormFields';
+import FormFooter from '../../components/FormFooter';
+import FormHeader from '../../components/FormHeader';
 
-const PaymentForm = ({ visible, onCancel, onSuccess }) => {
+const PaymentForm = (props) => {
+    const dispatch = useDispatch();
+    const { addEntity } = useEntityOperation();
+    const { isModalOpen, closeModal, formValues } = props;
 
-    const [form] = Form.useForm();
-    const [paymentMethod, setPaymentMethod] = useState("credit");
+    const onSubmit = async (values, { setSubmitting }) => {
+        addEntity("/brand", values).then(result => {
+            if (result.status) {
+                successNotif(result.message);
+                setSubmitting(false);
+                closeModal();
+            } else {
+                errorNotif(result.message);
+            }
+        }).catch(error => {
+            errorNotif(error.message);
+        }).finally(() => {
+            dispatch(setFormStatus());
+        })
+    }
 
-    const handlePayment = async () => {
-        try {
-            await form.validateFields();
-            message.success("Payment successful!");
-            onSuccess();
-            form.resetFields();
-        } catch (error) {
-            message.error("Please check the form fields.");
-        }
-    };
+    const resetForm = (props) => {
+        props.resetForm();
+    }
 
     return (
-        <Modal
-            title="Complete Payment"
-            open={visible}
-            onCancel={onCancel}
-            footer={[
-                <Button key="cancel" onClick={onCancel}>
-                    Cancel
-                </Button>,
-                <Button key="pay" type="primary" onClick={handlePayment}>
-                    Pay Now
-                </Button>,
-            ]}
-        >
-            <Tabs defaultActiveKey="credit" onChange={setPaymentMethod}>
-                {/* Credit Card / Debit Card */}
-                <TabPane tab="Credit/Debit Card" key="credit">
-                    <Form form={form} layout="vertical">
-                        <Form.Item
-                            label="Card Number"
-                            name="cardNumber"
-                            rules={[{ required: true, message: "Please enter your card number!" }]}
+        <>
+            <Formik initialValues={initialValues} validationSchema={validationSchema}
+                onSubmit={onSubmit}
+            >
+                {
+                    (props) => (
+                        <Modal open={isModalOpen} onCancel={closeModal} closable={false} maskClosable={false} footer={<FormFooter handleReset={() => resetForm(props)} />}
+                            afterOpenChange={open => {
+                                if (open && formValues) {
+                                    props.setValues(formValues)
+                                } else {
+                                    resetForm(props);
+                                }
+                            }}
                         >
-                            <Input placeholder="1234 5678 9012 3456" maxLength={19} />
-                        </Form.Item>
-                        <Form.Item
-                            label="Expiry Date"
-                            name="expiry"
-                            rules={[{ required: true, message: "Please enter expiry date!" }]}
-                        >
-                            <Input placeholder="MM/YY" maxLength={5} />
-                        </Form.Item>
-                        <Form.Item
-                            label="CVV"
-                            name="cvv"
-                            rules={[{ required: true, message: "Please enter CVV!" }]}
-                        >
-                            <Input placeholder="123" maxLength={3} />
-                        </Form.Item>
-                    </Form>
-                </TabPane>
-
-                {/* UPI */}
-                <TabPane tab="UPI" key="upi">
-                    <Form form={form} layout="vertical">
-                        <Form.Item
-                            label="UPI ID"
-                            name="upiId"
-                            rules={[{ required: true, message: "Please enter your UPI ID!" }]}
-                        >
-                            <Input placeholder="yourname@upi" />
-                        </Form.Item>
-                    </Form>
-                </TabPane>
-            </Tabs>
-        </Modal>
+                            <FormHeader title="Payment" closeModal={closeModal} />
+                            <Form layout='vertical' autoComplete='off' className='pt-3' >
+                                <InputField label={"Credit/Debit Card"} name="cardNumber" maxLength={16} errors={props.errors} />
+                                <DateField label={"Expiry Date"} name="expiryDate" picker={"month"} format={"MM-YY"} errors={props.errors} />
+                                <InputField label={"CVV"} name="cvv" maxLength={3} errors={props.errors} />
+                            </Form>
+                        </Modal>
+                    )
+                }
+            </Formik >
+        </>
     )
 }
+
+const initialValues = {
+    cardNumber: "",
+    expiryDate: "",
+    cvv: "",
+}
+
+const validationSchema = Yup.object({
+    cardNumber: Yup.string()
+        .length(16, 'Card number must be 16 digits')
+        .matches(/^[0-9]+$/, 'Card number must be numeric')
+        .required('Required'),
+    expiryDate: Yup.string()
+        .required('Required'),
+    cvv: Yup.string()
+        .length(3, 'CVV must be 3 digits')
+        .matches(/^[0-9]+$/, 'CVV must be numeric')
+        .required('Required'),
+});
 
 export default PaymentForm

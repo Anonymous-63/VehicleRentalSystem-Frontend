@@ -5,6 +5,7 @@ import { useLocation } from 'react-router'
 import VehicleBookingForm from './forms/VehicleBookingForm'
 import { DatetimeField } from '../components/FormFields'
 import { FaIndianRupeeSign } from 'react-icons/fa6'
+import PaymentForm from './forms/PaymentForm'
 
 const CarDetailsPage = (props) => {
     const location = useLocation();
@@ -90,15 +91,23 @@ const CarDetailsPage = (props) => {
                                         <span>Base fare</span>
                                     </Col>
                                     <Col span={12}>
-                                        <span>2000</span>
+                                        <span className='flex justify-end'>2000</span>
                                     </Col>
                                 </Row>
                                 <Row gutter={[12, 12]}>
                                     <Col span={12}>
-                                        <span>Base fare</span>
+                                        <span>Include all tax & GST</span>
                                     </Col>
                                     <Col span={12}>
-                                        <span>2000</span>
+                                        <span></span>
+                                    </Col>
+                                </Row>
+                                <Row gutter={[12, 12]}>
+                                    <Col span={12}>
+                                        <span className='text-2xl font-bold'>Total Price</span>
+                                    </Col>
+                                    <Col span={12}>
+                                        <span className='text-2xl font-semibold flex justify-end'>2000</span>
                                     </Col>
                                 </Row>
                             </div>
@@ -109,7 +118,11 @@ const CarDetailsPage = (props) => {
                     </Col>
                 </Row>
             </Content>
-            <VehicleBookingForm isModalOpen={isModalOpen} closeModal={closeModal} />
+            <PaymentForm
+                visible={isModalOpen}
+                onCancel={() => setModalVisible(false)}
+                onSuccess={() => setModalVisible(false)}
+            />
         </Layout>
     )
 }

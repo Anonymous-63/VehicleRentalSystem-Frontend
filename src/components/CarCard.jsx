@@ -26,7 +26,7 @@ const CarCard = ({ vehicle }) => {
                 <Meta title={
                     <div className="flex items-center space-x-2 text-xl font-semibold">
                         <FaIndianRupeeSign />
-                        <h1>2000</h1>
+                        <h1>{vehicle?.pricePerDay}</h1>
                         <span className="text-sm text-gray-500">per day</span>
                     </div>
                 }

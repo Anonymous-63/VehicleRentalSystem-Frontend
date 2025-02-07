@@ -26,8 +26,8 @@ const ShowVehicles = () => {
   }, [])
 
   return (
-    <Layout className='h-full bg-accent'>
-      <Header className='bg-slate-400 shadow-lg'>
+    <Layout className='h-full bg-surface'>
+      <Header className='bg-transparent shadow-lg'>
         <div className='flex justify-between items-center h-full'>
           <span className="text-2xl font-bold flex items-center space-x-2">
             <span className="cursor-default">Available Cars</span>

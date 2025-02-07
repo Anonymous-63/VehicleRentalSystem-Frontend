@@ -110,8 +110,14 @@ const ManageVehicle = () => {
     )
 }
 
+
+const ImageRenderer = (params) => {
+    return (<img src={params.value} alt="Image" style={{ width: "50px", borderRadius: "5px" }} />);
+};
+
 const colDefs = [
     { headerName: "ID", field: "id", sortable: true, filter: true },
+    { headerName: "Image", field: "vehicleImg", sortable: true, filter: true, cellRenderer: ImageRenderer, cellStyle: { display: "flex", justifyContent: "center", alignItems: "center" } },
     { headerName: "Brand", field: "brand.brand", sortable: true, filter: true },
     { headerName: "Model", field: "model.model", sortable: true, filter: true },
     { headerName: "Type", field: "type.type", sortable: true, filter: true },

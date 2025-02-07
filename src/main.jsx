@@ -13,6 +13,7 @@ import Register from './pages/Register.jsx'
 import { getDataFromLocalStorage } from './utils/storage.js'
 import { routeList } from "./utils/global.js"
 import CarDetailsPage from './pages/CarDetailsPage.jsx'
+import PageNotFound from './pages/PageNotFound.jsx'
 
 const AppContainer = () => {
   const token = getDataFromLocalStorage(JWT_TOKEN_PREFIX);
@@ -67,6 +68,9 @@ const router = createBrowserRouter([
   {
     path: "/unauthorized",
     element: <UnauthorizedPage />
+  }, {
+    path: "*",
+    element: <PageNotFound />
   }
 ])
 

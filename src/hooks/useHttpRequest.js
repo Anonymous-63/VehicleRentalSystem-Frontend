@@ -4,7 +4,7 @@ import { useHandlerApiError } from "./useHandleApiError"
 
 export const useHttpRequest = () => {
     const handleApiError = useHandlerApiError();
-    
+
 
     const apiRequest = async (method, url, data = null, params = {}) => {
         try {
@@ -25,7 +25,7 @@ export const useHttpRequest = () => {
             }
             const response = await fetch(url, options);
             if (!response.ok) {
-                handleApiError(response);
+                handleApiError(response)
                 throw new Error(`Request failed with status ${response.status}`);
             }
             return await response.json();

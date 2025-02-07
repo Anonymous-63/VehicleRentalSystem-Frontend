@@ -13,6 +13,8 @@ const CarDetailsPage = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [duration, setDuration] = useState(1);
+    let selectedDates = [dayjs(), dayjs()];
+
 
     const closeModal = () => {
         setIsModalOpen(false);
@@ -76,7 +78,7 @@ const CarDetailsPage = () => {
                                 <DatePicker.RangePicker
                                     disabledDate={disabledDate}
                                     size='large'
-                                    defaultValue={[dayjs(), dayjs()]}
+                                    defaultValue={selectedDates}
                                     onCalendarChange={onBookingDateChange}
                                     className='w-full'
                                 />
@@ -107,7 +109,7 @@ const CarDetailsPage = () => {
             </Content>
 
             {/* Payment Modal */}
-            <PaymentForm isModalOpen={isModalOpen} closeModal={closeModal} vehicle={vehicle}  />
+            <PaymentForm isModalOpen={isModalOpen} closeModal={closeModal} fareDetails={{ vehicleId: vehicle?.id, selectedDates, duration, price: totalPrice }} />
         </Layout>
     );
 };

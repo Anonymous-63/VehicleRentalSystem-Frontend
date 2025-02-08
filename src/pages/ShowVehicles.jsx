@@ -33,13 +33,6 @@ const ShowVehicles = () => {
             <span className="cursor-default">Available Cars</span>
           </span>
           <div className='flex gap-2'>
-            <Search
-              placeholder="Search Cars here..."
-              allowClear
-              enterButton="Search"
-              size="large"
-              onSearch={() => { }}
-            />
           </div>
         </div>
       </Header>

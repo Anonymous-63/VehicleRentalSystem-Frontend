@@ -73,8 +73,8 @@ const CarDetailsPage = () => {
                             </div>
                             <Tag color="green-inverse" className='font-bold text-base'>Free cancellation</Tag>
 
-                            <Divider orientation='left'>Booking Dates</Divider>
-                            <div className='p-4 bg-gray-200 rounded-lg shadow-md'>
+                            <Divider orientation='center' style={{ borderColor: '#000', fontWeight: 'bold' }}>BOOKING DATES</Divider>
+                            <div className='p-4 bg-accent rounded-lg shadow-md'>
                                 <DatePicker.RangePicker
                                     disabledDate={disabledDate}
                                     size='large'
@@ -85,9 +85,9 @@ const CarDetailsPage = () => {
                             </div>
 
                             {/* Fare Details */}
-                            <Divider orientation="center">FARE DETAILS</Divider>
-                            <div className='p-4 bg-white rounded-lg shadow-md'>
-                                <FareDetail label={`Base fare (${vehicle?.pricePerDay} X ${duration})`} amount={baseFare} />
+                            <Divider orientation="center" style={{ borderColor: '#000', fontWeight: 'bold' }}>FARE DETAILS</Divider>
+                            <div className='p-4 bg-surface rounded-lg shadow-md'>
+                                <FareDetail label={`Base fare (${vehicle?.pricePerDay} x ${duration})`} amount={baseFare} />
                                 <FareDetail label="Doorstep delivery & pickup" amount={pickupCharge} />
                                 <FareDetail label="Insurance & GST" amount="Included" />
                             </div>
@@ -116,9 +116,9 @@ const CarDetailsPage = () => {
 
 // Reusable Component for Fare Details
 export const FareDetail = ({ label, amount, isTotal }) => (
-    <Row gutter={[12, 12]} className={`py-1 ${isTotal ? "text-2xl font-medium" : "text-gray-700"}`}>
-        <Col span={12}>{label}</Col>
-        <Col span={12} className="flex items-center justify-end font-semibold">
+    <Row gutter={[12, 12]} className={`py-1 `}>
+        <Col span={12} className={`${isTotal ? "text-2xl font-medium" : "font-semibold text-gray-700"}`}>{label}</Col>
+        <Col span={12} className={`flex items-center justify-end font-semibold ${isTotal ? "text-2xl font-medium" : "text-gray-700"}`}>
             {typeof amount === "number" ? <><FaIndianRupeeSign />&nbsp;{amount}</> : amount}
         </Col>
     </Row>

@@ -12,6 +12,7 @@ import { getDataFromLocalStorage } from '../utils/storage'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
 import { useAccountOperation } from '../hooks/useAccountOperation'
+import { routeList } from '../utils/global'
 
 const Login = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const Login = () => {
           getWebOperator().then(result => {
             if (result.status) {
               dispatch(addUser(result.data))
-              navigate("/user")
+              navigate("/home");
             }
           }).catch(error => {
             errorNotif(error.message)

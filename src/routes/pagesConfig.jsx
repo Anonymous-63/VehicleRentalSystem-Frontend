@@ -10,8 +10,12 @@ import Payment from "../pages/Payment";
 import ManageVehicleType from "../pages/ManageVehicleType";
 import ManageVehicle from "../pages/ManageVehicle";
 import ShowVehicles from "../pages/ShowVehicles";
+import { FaHome } from "react-icons/fa";
+import HomePage from "../pages/HomePage";
 
 export const webPages = [];
+
+const home = new webPage(0, new sidebar(0, "Home", <FaHome />, "home", <HomePage />), null, [], ["admin", "user"]);
 
 const manageUser = new webPage(1, new sidebar(1, "Manage Users", <FaUsers />, "user", <ManageUser />), null, [], ["admin"]);
 
@@ -24,8 +28,8 @@ const manageVehicleType = new webPage(7, new sidebar(7, "Vehicle Type", <FaCar /
 vehicle.children.push(manageVehicleBrand, manageVehicleModel, manageVehicleType, manageVehicle);
 
 const booking = new webPage(8, new sidebar(8, "Booking", <FaCalendarCheck />, "booking", <Booking />), null, [], ["admin", "user"])
-const payment = new webPage(9, new sidebar(9, "Payment", <MdOutlinePayment />, "payment", <Payment />), null, [], ["admin"])
+const payment = new webPage(9, new sidebar(9, "Payment", <MdOutlinePayment />, "payment", <Payment />), null, [], ["admin", "user"])
 
-const showVehicles = new webPage(10, new sidebar(10, "Vehicles", <FaCar />, "showVehicles", <ShowVehicles />), null, [], ["user"]);
+const showVehicles = new webPage(10, new sidebar(10, "Vehicles", <FaCar />, "showVehicles", <ShowVehicles />), null, [], ["admin", "user"]);
 
-webPages.push(manageUser, vehicle, booking, payment, showVehicles);
+webPages.push(home, showVehicles, booking, payment, manageUser, vehicle);

@@ -45,7 +45,7 @@ const VehicleBookingForm = (props) => {
                 <Button key={"payment"} type='primary' onClick={() => setPaymentModalOpen(true)}>Make Payment</Button>
             ]}>
                 <FormHeader title={"Vehicle Booking"} closeModal={closeModal} />
-                <div className='space-y-2'>
+                <div className='space-y-2 py-3'>
                     <div className="flex items-center space-x-2 text-3xl font-semibold">
                         <FaIndianRupeeSign />
                         <h1>{vehicle?.pricePerDay}</h1>
@@ -53,8 +53,8 @@ const VehicleBookingForm = (props) => {
                     </div>
                     <Tag color="green-inverse" className='font-bold text-base'>Free cancellation</Tag>
 
-                    <Divider style={{ borderColor: '#000' }} >BOOKING DATES</Divider>
-                    <div className='p-4 bg-gray-200 rounded-lg shadow-md'>
+                    <Divider style={{ borderColor: '#000', fontWeight: 'bold' }} >BOOKING DATES</Divider>
+                    <div className='p-4 bg-accent rounded-lg shadow-md'>
                         <DatePicker.RangePicker
                             disabledDate={disabledDate}
                             size='large'
@@ -65,8 +65,8 @@ const VehicleBookingForm = (props) => {
                     </div>
 
                     {/* Fare Details */}
-                    <Divider orientation="center" style={{ borderColor: '#000' }}>FARE DETAILS</Divider>
-                    <div className='p-4 bg-white'>
+                    <Divider orientation="center" style={{ borderColor: '#000', fontWeight: 'bold' }}>FARE DETAILS</Divider>
+                    <div className='p-4 bg-surface rounded-2xl shadow-xl'>
                         <FareDetail label={`Base fare (${vehicle?.pricePerDay} X ${duration})`} amount={baseFare} />
                         <FareDetail label="Doorstep delivery & pickup" amount={pickupCharge} />
                         <FareDetail label="Insurance & GST" amount="Included" />

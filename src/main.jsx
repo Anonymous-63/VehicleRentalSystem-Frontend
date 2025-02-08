@@ -36,18 +36,20 @@ const router = createBrowserRouter([
     children: [
       ...routeList,
       {
+        path: "/home",
+        element: (
+          <HomePage />
+        )
+      },
+      {
         path: "/",
-        element: <Navigate to={routeList.length > 0 ? routeList[0].path : "/unauthorized"} />
+        element: <Navigate to={routeList?.length > 0 ? routeList[0]?.path : "/unauthorized"} />
       },
       {
         path: "/carDetails",
         element: <CarDetailsPage />
       }
     ]
-  },
-  {
-    path: "/home",
-    element: <HomePage />
   },
   {
     path: "/login",

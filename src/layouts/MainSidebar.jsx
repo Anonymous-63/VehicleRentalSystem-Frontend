@@ -4,13 +4,14 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router';
 import { getDataFromLocalStorage } from '../utils/storage';
 import { webPages } from '../routes/pagesConfig';
-import { JWT_TOKEN_PREFIX } from '../utils/Constants';
+import { JWT_TOKEN_PREFIX, USER_PREFIX } from '../utils/Constants';
 
 const MainSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const token = getDataFromLocalStorage(JWT_TOKEN_PREFIX);
-
+  const user = getDataFromLocalStorage(USER_PREFIX);
+  const userRole = user ? user.role : null;
   // State to manage open keys
   const [openKeys, setOpenKeys] = useState([]);
 
@@ -18,13 +19,18 @@ const MainSidebar = () => {
   const filterSidebar = webPages
     .map((webPage) => {
       if (webPage.children.length > 0) {
-        let childPages = webPage.children.filter(() => token);
+        // Filter children based on role
+        let childPages = webPage.children.filter(
+          (child) => child.roles.length === 0 || (userRole && child.roles.includes(userRole))
+        );
+
         if (childPages.length > 0) {
           return { ...webPage, children: childPages };
         }
         return null;
       } else {
-        return token ? webPage : null;
+        // Check if parent page is accessible
+        return webPage.roles.length === 0 || (userRole && webPage.roles.includes(userRole)) ? webPage : null;
       }
     })
     .filter((webPage) => webPage !== null);

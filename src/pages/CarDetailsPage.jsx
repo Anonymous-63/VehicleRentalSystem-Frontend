@@ -74,7 +74,7 @@ const CarDetailsPage = () => {
                             <Tag color="green-inverse" className='font-bold text-base'>Free cancellation</Tag>
 
                             <Divider orientation='center' style={{ borderColor: '#000', fontWeight: 'bold' }}>BOOKING DATES</Divider>
-                            <div className='p-4 bg-accent rounded-lg shadow-md'>
+                            <div className='p-4 bg-surface rounded-lg shadow-md'>
                                 <DatePicker.RangePicker
                                     disabledDate={disabledDate}
                                     size='large'

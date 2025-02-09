@@ -54,7 +54,7 @@ const VehicleBookingForm = (props) => {
                     <Tag color="green-inverse" className='font-bold text-base'>Free cancellation</Tag>
 
                     <Divider style={{ borderColor: '#000', fontWeight: 'bold' }} >BOOKING DATES</Divider>
-                    <div className='p-4 bg-accent rounded-lg shadow-md'>
+                    <div className='p-4 bg-surface rounded-lg shadow-md'>
                         <DatePicker.RangePicker
                             disabledDate={disabledDate}
                             size='large'
@@ -66,7 +66,7 @@ const VehicleBookingForm = (props) => {
 
                     {/* Fare Details */}
                     <Divider orientation="center" style={{ borderColor: '#000', fontWeight: 'bold' }}>FARE DETAILS</Divider>
-                    <div className='p-4 bg-surface rounded-2xl shadow-xl'>
+                    <div className='p-4 bg-surface rounded-2xl shadow-md'>
                         <FareDetail label={`Base fare (${vehicle?.pricePerDay} X ${duration})`} amount={baseFare} />
                         <FareDetail label="Doorstep delivery & pickup" amount={pickupCharge} />
                         <FareDetail label="Insurance & GST" amount="Included" />

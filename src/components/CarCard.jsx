@@ -21,7 +21,7 @@ const CarCard = ({ vehicle }) => {
                     <Button color='primary' variant='text' onClick={() => navigate("/carDetails", { state: { vehicle } })} className='font-bold' >Show Details</Button>,
                     <Button color='danger' variant='text' onClick={() => setIsModalOpen(true)} className='font-bold'  >Book Now</Button>,
                 ]}
-                className='flex flex-col h-full bg-accent'
+                className='flex flex-col h-full'
             >
                 <Meta title={
                     <div className="flex items-center space-x-2 text-xl font-semibold">

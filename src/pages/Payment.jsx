@@ -1,4 +1,4 @@
-import { Layout } from 'antd'
+import { Layout, Tag } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
 import ReportHeader from '../layouts/ReportHeader'
 import { Content } from 'antd/es/layout/layout'
@@ -56,9 +56,13 @@ const PaymentDateRenderer = (param) => {
   return dayjs(param?.value).format("YYYY-MM-DD HH:mm:ss");
 }
 
+const PaymentRenderer = (params) => {
+  return <Tag color="processing" className='font-semibold'>{params.value}</Tag>
+}
+
 const colDefs = [
   { headerName: "Payment Id", field: "paymentId", sortable: true, filter: true },
-  { headerName: "Payment Date", field: "paymentId", sortable: true, filter: true, cellRenderer: PaymentDateRenderer },
+  { headerName: "Payment Date", field: "paymentDate", sortable: true, filter: true, cellRenderer: PaymentDateRenderer },
   { headerName: "Booking Id", field: "booking.bookingId", sortable: true, filter: true },
   { headerName: "User Name", field: "user.name", sortable: true, filter: true },
   { headerName: "User Email", field: "user.email", sortable: true, filter: true },
@@ -67,7 +71,7 @@ const colDefs = [
   { headerName: "Vehicle Model", field: "booking.vehicle.model.model", sortable: true, filter: true },
   { headerName: "Payment Transaction Id", field: "transactionId", sortable: true, filter: true },
   { headerName: "Payment Type", field: "paymentType", sortable: true, filter: true },
-  { headerName: "Payment Amount", field: "amount", sortable: true, filter: true },
+  { headerName: "Payment Amount", field: "amount", sortable: true, filter: true,cellRenderer: PaymentRenderer },
 ];
 
 export async function getAllPayment(getAllEntity) {

@@ -79,17 +79,21 @@ const BookingStatusRenderer = (params) => {
   return <Tag color={statusColor} className='font-semibold'>{params.value}</Tag>
 }
 
+const PaymentRenderer = (params) => {
+  return <Tag color="processing" className='font-semibold'>{params.value}</Tag>
+}
+
 const colDefs = [
   { headerName: "Booking Status", field: "bookingStatus", sortable: true, filter: true, cellRenderer: BookingStatusRenderer },
   { headerName: "Booking Id", field: "bookingId", sortable: true, filter: true },
-  { headerName: "Booking From Date", field: "bookingFromDate", sortable: true, filter: true,cellRenderer: BookingDateRenderer },
-  { headerName: "Booking To Date", field: "bookingToDate", sortable: true, filter: true,cellRenderer: BookingDateRenderer },
+  { headerName: "Booking From Date", field: "bookingFromDate", sortable: true, filter: true, cellRenderer: BookingDateRenderer },
+  { headerName: "Booking To Date", field: "bookingToDate", sortable: true, filter: true, cellRenderer: BookingDateRenderer },
   { headerName: "User Name", field: "user.name", sortable: true, filter: true },
   { headerName: "User Email", field: "user.email", sortable: true, filter: true },
   { headerName: "Vehicle License Plate", field: "vehicle.licensePlate", sortable: true, filter: true },
   { headerName: "Vehicle Brand", field: "vehicle.brand.brand", sortable: true, filter: true },
   { headerName: "Vehicle Model", field: "vehicle.model.model", sortable: true, filter: true },
-  { headerName: "Price", field: "price", sortable: true, filter: true },
+  { headerName: "Price", field: "price", sortable: true, filter: true, cellRenderer: PaymentRenderer },
 ];
 
 export async function getAllBooking(getAllEntity) {

@@ -26,7 +26,7 @@ const ShowVehicles = () => {
   }, [])
 
   return (
-    <Layout className='h-full bg-surface'>
+    <Layout className='h-full'>
       <Header className='bg-transparent shadow-lg'>
         <div className='flex justify-between items-center h-full'>
           <span className="text-2xl font-bold flex items-center space-x-2">
@@ -36,7 +36,7 @@ const ShowVehicles = () => {
           </div>
         </div>
       </Header>
-      <Content className='h-full m-3 p-2 bg-white shadow-2xl rounded-2xl overflow-auto'>
+      <Content className='h-full m-3 p-2 bg-surface shadow-2xl rounded-2xl overflow-auto'>
         <Row gutter={[16, 16]}>
           {
             vehicles.map(vehicle => (

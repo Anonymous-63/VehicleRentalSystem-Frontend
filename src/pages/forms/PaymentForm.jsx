@@ -20,6 +20,8 @@ const PaymentForm = (props) => {
     const { isModalOpen, closeModal, fareDetails } = props;
     const { vehicleId, selectedDates, duration, price } = fareDetails;
 
+    const disabledDate = (current) => current && current < dayjs().startOf('day');
+
     const onSubmit = async (values, { setSubmitting }) => {
         try {
             const user = getDataFromLocalStorage(USER_PREFIX);
@@ -80,7 +82,7 @@ const PaymentForm = (props) => {
                             <FormHeader title="Payment" closeModal={closeModal} />
                             <Form layout='vertical' autoComplete='off' className='pt-3' >
                                 <InputField label={"Credit/Debit Card"} name="cardNumber" maxLength={16} showCount errors={props.errors} />
-                                <DateField label={"Expiry Date"} name="expiryDate" picker={"month"} format={"MM-YY"} errors={props.errors} />
+                                <DateField label={"Expiry Date"} name="expiryDate" picker={"month"} format={"MM-YY"} disabledDate={disabledDate} errors={props.errors} />
                                 <InputField label={"CVV"} name="cvv" maxLength={3} showCount errors={props.errors} />
                             </Form>
                         </Modal>

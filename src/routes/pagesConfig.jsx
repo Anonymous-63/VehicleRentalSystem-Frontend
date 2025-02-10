@@ -35,6 +35,6 @@ vehicle.children.push(manageVehicleBrand, manageVehicleModel, manageVehicleType,
 const booking = new webPage(8, new sidebar(8, "Booking", <FaCalendarCheck />, "booking", <Booking />), null, [], ["admin", "user"])
 const payment = new webPage(9, new sidebar(9, "Payment", <MdOutlinePayment />, "payment", <Payment />), null, [], ["admin", "user"])
 
-const showVehicles = new webPage(10, new sidebar(10, "Vehicles", <FaCar />, "showVehicles", <ShowVehicles />), null, [], ["admin", "user"]);
+const showVehicles = new webPage(10, new sidebar(10, "Vehicles", <FaCar />, "showVehicles", <ShowVehicles />), null, [], ["user"]);
 
 webPages.push(home, showVehicles, booking, payment, manageUser, vehicle, about, contact);

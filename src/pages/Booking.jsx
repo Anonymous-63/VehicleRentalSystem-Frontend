@@ -1,4 +1,4 @@
-import { Layout, Tag } from 'antd'
+import { Button, Layout, Tag } from 'antd'
 import { Content } from 'antd/es/layout/layout'
 import React, { useEffect, useRef, useState } from 'react'
 import { FaFileSignature } from 'react-icons/fa6'
@@ -13,12 +13,12 @@ import { getDataFromLocalStorage } from '../utils/storage'
 import { USER_PREFIX } from '../utils/Constants'
 import dayjs from 'dayjs'
 
+const user = getDataFromLocalStorage(USER_PREFIX);
 const Booking = () => {
   const gridRef = useRef();
   const [rowData, setRowData] = useState([]);
   const [columnDefs] = useState(colDefs);
   const { getEntity, getAllEntity, deleteEntity } = useEntityOperation();
-  const user = getDataFromLocalStorage(USER_PREFIX);
   useEffect(() => {
     if (user?.role === "admin") {
       getAllBooking(getAllEntity).then(result => {
@@ -61,22 +61,35 @@ const BookingDateRenderer = (param) => {
 }
 
 const BookingStatusRenderer = (params) => {
-  const status = params.value;
-  let statusColor;
-  switch (status) {
-    case "APPROVED":
-      statusColor = "green-inverse";
-      break;
-    case "PENDING":
-      statusColor = "blue-inverse";
-      break;
-    case "REJECTED":
-      statusColor = "red-inverse";
-      break;
-    default:
-      break;
+  console.log("user ", user);
+
+  if (user?.role === "admin") {
+    return (
+      <div className='space-x-2'>
+        <Button color='danger' variant='solid'>Cancel</Button>
+        <Button color='green' variant='solid'>Confirm</Button>
+      </div>
+    );
+  } else {
+    const status = params.value;
+    let statusColor;
+    switch (status) {
+      case "APPROVED":
+        statusColor = "green-inverse";
+        break;
+      case "PENDING":
+        statusColor = "blue-inverse";
+        break;
+      case "REJECTED":
+        statusColor = "red-inverse";
+        break;
+      default:
+        break;
+    }
+    return <Tag color={statusColor} className='font-semibold'>{params.value}</Tag>
   }
-  return <Tag color={statusColor} className='font-semibold'>{params.value}</Tag>
+
+
 }
 
 const PaymentRenderer = (params) => {

@@ -20,7 +20,7 @@ const MainHeader = () => {
   return (
     <Header className='bg-secondary text-white shadow-lg z-10'>
       <div className="flex justify-between items-center h-full">
-        <h1 className='text-4xl font-bold'>VRS</h1>
+        <h1 className='text-4xl font-bold'>Car Rental System</h1>
         <div className='flex items-center gap-2'>
           <span className="text-base font-semibold opacity-75">{currentDate}</span>
           <HeadUser />

@@ -13,7 +13,7 @@ const ShowVehicles = () => {
   const [vehicles, setVehicles] = useState([]);
 
   useEffect(() => {
-    getAllVehicles(getAllEntity).then(result => {
+    getAllAvailableVehicles(getAllEntity).then(result => {
       if (result.status) {
         if (result.data.length > 0) {
           console.log("vehicle", result);
@@ -53,9 +53,9 @@ const ShowVehicles = () => {
   )
 }
 
-export async function getAllVehicles(getAllEntity) {
+export async function getAllAvailableVehicles(getAllEntity) {
   try {
-    return await getAllEntity("/vehicle");
+    return await getAllEntity("/vehicle/available");
   } catch (error) {
     throw error;
   }

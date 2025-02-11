@@ -9,7 +9,7 @@ import { DateField, InputField } from '../../components/FormFields';
 import FormFooter from '../../components/FormFooter';
 import FormHeader from '../../components/FormHeader';
 import { USER_PREFIX } from '../../utils/Constants';
-import { errorNotif, successNotif } from '../../components/CustomNotification';
+import { errorNotif, successNotif, warningNotif } from '../../components/CustomNotification';
 import { getDataFromLocalStorage } from '../../utils/storage';
 import dayjs from 'dayjs';
 import { setFormStatus } from '../../store/features/formStatusSlice';
@@ -43,7 +43,7 @@ const PaymentForm = (props) => {
                 errorNotif(bookingResult?.message || "Booking not complete. Try again.");
             }
             if (bookingResult.status) {
-                successNotif(bookingResult.message)
+                warningNotif(bookingResult.message)
             }
 
             const paymentData = {
